@@ -7,7 +7,7 @@ export default {
 
 <template>
     <div class="card">
-        <img src="../../assets/homephoto.png" class="card-img-top" alt="...">
+        <img :src="apartment.image" class="card-img-top" alt="...">
         <div class="card-body">
             <h5>{{ apartment.title }}</h5>
             <p class="mb-0">{{ apartment.address }}</p>
@@ -17,4 +17,29 @@ export default {
     </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.card {
+    width: 350px;
+    height: 350px;
+    border: none;
+    margin-top: 50px;
+
+    .card-body {
+        padding-left: 5px;
+        padding-right: 50px;
+    }
+
+    p {
+        color: gray;
+    }
+
+    img {
+        height: 250px;
+        border-radius: 10px;
+    }
+
+    h5 {
+        text-transform: uppercase;
+    }
+}
+</style>
