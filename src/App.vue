@@ -9,6 +9,7 @@ export default {
 
 <template>
   <AppHeader />
+  <RouterView />
 </template>
 
 <style scoped lang="scss"></style>
