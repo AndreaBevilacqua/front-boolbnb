@@ -8,7 +8,9 @@ export default {
 </script>
 
 <template>
-    <ApartmentCard v-for="apartment in apartments" :key="apartment.id" :apartment="apartment" />
+    <div class="row d-flex flex-wrap">
+        <ApartmentCard v-for="apartment in apartments" :key="apartment.id" :apartment="apartment" />
+    </div>
 </template>
 
 <style></style>
