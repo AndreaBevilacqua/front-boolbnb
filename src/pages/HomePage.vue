@@ -29,7 +29,7 @@ export default {
                 <div class="card-body">
                     <h5 class="card-title">Trova alloggi su Boolbnb</h5>
                     <p>Alloggi e stanze per ogni tipo di esigenza</p>
-                    <form action="">
+                    <form submit.prevent>
                         <label for="search-address">Dove</label>
                         <input id="search-address" type="address">
                         <button>Cerca</button>
