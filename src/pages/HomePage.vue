@@ -25,10 +25,10 @@ export default {
 <template>
     <div class="container">
         <section class="jumbotron">
-            <div class="card">
+            <div class="card p-4">
                 <div class="card-body">
-                    <h5 class="card-title">Trova alloggi su Boolbnb</h5>
-                    <p>Alloggi e stanze per ogni tipo di esigenza</p>
+                    <h3 class="card-title">Trova alloggi su Boolbnb</h3>
+                    <p class="">Alloggi e stanze per ogni tipo di esigenza</p>
                     <form submit.prevent>
                         <label for="search-address">Dove</label>
                         <input id="search-address" type="address">
@@ -46,27 +46,32 @@ export default {
 
 <style scoped lang="scss">
 .jumbotron {
-    margin-top: 40px;
-    max-width: 1200px;
 
     position: relative;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: end;
 
     img {
         border-radius: 10px;
         box-shadow: 10px 10px 10px gray;
+        width: 90%;
+        object-fit: cover;
     }
 
 
 
     .card {
-        z-index: 2;
         border: none;
-        width: 333px;
-        border-radius: 10px;
+        width: 500px;
+        height: 300px;
+        border-radius: 25px;
         box-shadow: 5px 5px 30px gray;
+
+        position: absolute;
+        top: 50%;
+        left: 10%;
+        transform: translate(-50%, -50%);
 
         p {
             color: rgba(128, 128, 128, 0.5);
@@ -74,8 +79,8 @@ export default {
 
         button {
             display: block;
-            width: 300px;
-            height: 35px;
+            width: 100%;
+            height: 2.5rem;
             margin-top: 10px;
 
             border: none;
@@ -90,12 +95,15 @@ export default {
 
         form {
             label {
-                font-size: 0.9rem;
+                font-size: 1.1rem;
             }
 
             input {
                 display: block;
-                width: 300px;
+                width: 100%;
+                height: 2rem;
+                padding-left: 10px;
+                margin-bottom: 1rem;
                 border-radius: 5px;
                 border: 1px solid rgba(128, 128, 128, 0.3);
             }
