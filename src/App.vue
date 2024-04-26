@@ -1,15 +1,25 @@
 <script>
 import AppHeader from './components/AppHeader.vue';
+import AppFooter from './components/AppFooter.vue';
 
 export default {
   name: 'Boolbnb',
-  components: { AppHeader },
+  components: { AppHeader, AppFooter },
 }
 </script>
 
 <template>
   <AppHeader />
-  <RouterView />
+  <main>
+    <RouterView />
+  </main>
+  <AppFooter />
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+main {
+  height: calc(100vh - 130px);
+  overflow: auto;
+  padding: 3rem;
+}
+</style>
