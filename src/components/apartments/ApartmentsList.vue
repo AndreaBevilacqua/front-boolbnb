@@ -8,9 +8,10 @@ export default {
 </script>
 
 <template>
-    <div class="row d-flex flex-wrap">
+    <div v-if="apartments.length" class="row d-flex flex-wrap">
         <ApartmentCard v-for="apartment in apartments" :key="apartment.id" :apartment="apartment" />
     </div>
+    <h2 v-else class="text-center mt-5 ">Nessun appartamento è stato trovato</h2>
 </template>
 
 <style></style>
