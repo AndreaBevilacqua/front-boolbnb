@@ -2,17 +2,35 @@
 import axios from 'axios';
 import ApartmentsList from '../components/apartments/ApartmentsList.vue';
 const endpoint = 'http://localhost:8000/api/apartments/';
+const endpointAddressSearch = 'http://localhost:8000/api/apartments/search/'
 export default {
     name: 'HomePage',
     components: { ApartmentsList },
     data: () => ({
-        apartments: []
+        apartments: [],
+        searchAddress: ''
     }),
     methods: {
         fetchApartments() {
             axios.get(endpoint).then(res => {
                 this.apartments = res.data
             })
+        },
+        searchApartmentsWithAddress() {
+
+            // Se non è stato cercato nessun indirizzo, esegue fetchApartments
+            if (!this.searchAddress) {
+                this.fetchApartments()
+
+            } else {
+                axios.get(endpointAddressSearch, {
+                    params: {
+                        address: this.searchAddress
+                    }
+                }).then(res => {
+                    this.apartments = res.data;
+                })
+            }
         }
     },
     created() {
@@ -29,10 +47,11 @@ export default {
                 <div class="card-body">
                     <h3 class="card-title">Trova alloggi su Boolbnb</h3>
                     <p class="">Alloggi e stanze per ogni tipo di esigenza</p>
-                    <form submit.prevent>
+                    <form @submit.prevent>
                         <label for="search-address">Dove</label>
-                        <input id="search-address" type="address">
-                        <button>Cerca</button>
+                        <input @keyup.enter="searchApartmentsWithAddress" id="search-address" type="address"
+                            v-model="searchAddress">
+                        <button type="button" @click="searchApartmentsWithAddress">Cerca</button>
                     </form>
                 </div>
             </div>
