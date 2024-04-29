@@ -8,12 +8,12 @@ export default {
 <template>
     <div class="col">
         <div class="card">
-            <img :src="apartment.image" class="card-img-top" alt="...">
+            <img :src="apartment.image" class="card-img-top img-fluid" alt="...">
             <div class="card-body">
                 <h5>{{ apartment.title }}</h5>
-                <p class="mb-0">{{ apartment.address }}</p>
-                <p class="mb-0">€{{ apartment.price_per_night }}</p>
-                <p class="mb-0">{{ apartment.square_meters }} m<sup>2</sup></p>
+                <p class="mb-1">{{ apartment.address }}</p>
+                <p class="mb-1">€{{ apartment.price_per_night }}</p>
+                <p class="mb-1">{{ apartment.square_meters }} m<sup>2</sup></p>
             </div>
         </div>
     </div>
@@ -21,14 +21,13 @@ export default {
 
 <style scoped lang="scss">
 .card {
-    width: 350px;
-    height: 350px;
+    width: 100%;
     border: none;
     margin-top: 50px;
 
     .card-body {
-        padding-left: 5px;
-        padding-right: 50px;
+        padding: 0;
+        padding-top: 1rem;
     }
 
     p {
@@ -36,12 +35,9 @@ export default {
     }
 
     img {
-        min-height: 250px;
-        border-radius: 10px;
-    }
-
-    h5 {
-        text-transform: uppercase;
+        height: 260px;
+        object-fit: cover;
+        border-radius: 5px;
     }
 }
 </style>

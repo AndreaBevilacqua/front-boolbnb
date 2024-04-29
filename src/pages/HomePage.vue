@@ -41,8 +41,8 @@ export default {
 </script>
 
 <template>
-    <div class="container">
-        <section class="jumbotron">
+    <div class="container-fluid">
+        <section class="jumbotron container mb-5">
             <div class="card p-4">
                 <div class="card-body">
                     <h3 class="card-title">Trova alloggi su Boolbnb</h3>
@@ -55,7 +55,7 @@ export default {
                     </form>
                 </div>
             </div>
-            <img src="../assets/homephoto.png" alt="homephoto">
+            <img src="../assets/homephoto.jpg" alt="homephoto">
         </section>
 
         <ApartmentsList :apartments="apartments" />
@@ -99,7 +99,7 @@ export default {
         button {
             display: block;
             width: 100%;
-            height: 2.5rem;
+            height: 3rem;
             margin-top: 10px;
 
             border: none;
@@ -108,6 +108,7 @@ export default {
 
             color: white;
             font-weight: 600;
+            font-size: 1.3rem;
 
 
         }
@@ -120,7 +121,7 @@ export default {
             input {
                 display: block;
                 width: 100%;
-                height: 2rem;
+                height: 2.5rem;
                 padding-left: 10px;
                 margin-bottom: 1rem;
                 border-radius: 5px;
