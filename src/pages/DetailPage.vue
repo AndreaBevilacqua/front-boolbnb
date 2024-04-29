@@ -27,8 +27,20 @@ export default {
 </script>
 
 <template>
-    <div v-if="apartment">
+    <div class="container" v-if="apartment">
         <h4>{{ apartment.title }}</h4>
+        <img :src="apartment.image" :alt="apartment.title">
+        <span>Proprietario: {{ apartment.user.name }}</span>
+        <ul>
+            <li>Camere: {{ apartment.rooms }}</li>
+            <li>Letti: {{ apartment.beds }}</li>
+            <li>Bagni: {{ apartment.bathrooms }}</li>
+        </ul>
+        <p>{{ apartment.description }}</p>
+        <ul>
+            <li v-for="service in apartment.services">{{ service.label }}</li>
+        </ul>
+
     </div>
 
 </template>
