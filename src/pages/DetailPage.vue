@@ -29,7 +29,8 @@ export default {
 <template>
     <div class="container" v-if="apartment">
         <h4>{{ apartment.title }}</h4>
-        <img :src="apartment.image" :alt="apartment.title">
+        <span>{{ apartment.address }}</span>
+        <img class="d-block" :src="apartment.image" :alt="apartment.title">
         <span>Proprietario: {{ apartment.user.name }}</span>
         <ul>
             <li>Camere: {{ apartment.rooms }}</li>
