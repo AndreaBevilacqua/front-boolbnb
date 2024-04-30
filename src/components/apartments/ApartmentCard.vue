@@ -1,4 +1,6 @@
 <script>
+import { RouterLink } from 'vue-router';
+
 export default {
     name: 'ApartmentCard',
     props: { apartment: Object }
@@ -9,12 +11,13 @@ export default {
     <div class="col">
         <div class="card">
             <img :src="apartment.image" class="card-img-top img-fluid" alt="...">
-            <div class="card-body">
+            <RouterLink class="card-body text-decoration-none"
+                :to="{ name: 'detail-page', params: { slug: apartment.slug } }">
                 <h5>{{ apartment.title }}</h5>
                 <p class="mb-1">{{ apartment.address }}</p>
                 <p class="mb-1">€{{ apartment.price_per_night }}</p>
                 <p class="mb-1">{{ apartment.square_meters }} m<sup>2</sup></p>
-            </div>
+            </RouterLink>
         </div>
     </div>
 </template>
