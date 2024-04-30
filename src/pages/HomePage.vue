@@ -8,10 +8,11 @@ export default {
     components: { ApartmentsList },
     data: () => ({
         apartments: [],
-        searchAddress: ''
+        searchAddress: '',
     }),
     methods: {
         fetchApartments() {
+            this.isLoading = true
             axios.get(endpoint).then(res => {
                 this.apartments = res.data
             })
@@ -34,8 +35,8 @@ export default {
                     <form @submit.prevent>
                         <label for="search-address">Dove</label>
                         <input id="search-address" type="address" v-model="searchAddress">
-                        <button type="button">Cerca</button>
-                        <RouterLink :to="{ name: 'filtered-apartments', query: { address: searchAddress } }">Cerca
+                        <RouterLink class="bnt button"
+                            :to="{ name: 'filtered-apartments', query: { address: searchAddress } }">Cerca
                         </RouterLink>
                     </form>
                 </div>
@@ -43,7 +44,7 @@ export default {
             <img src="../assets/homephoto.jpg" alt="homephoto">
         </section>
 
-        <ApartmentsList :apartments="apartments" />
+        <!-- <ApartmentsList :apartments="apartments" /> -->
     </div>
 
 </template>
@@ -81,11 +82,14 @@ export default {
             color: rgba(128, 128, 128, 0.5);
         }
 
-        button {
+        .button {
             display: block;
             width: 100%;
             height: 3rem;
             margin-top: 10px;
+            text-decoration: none;
+            text-align: center;
+            line-height: 3rem;
 
             border: none;
             background: linear-gradient(to right, #0E485B, #4BC9E4);
