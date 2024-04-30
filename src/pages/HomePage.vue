@@ -3,7 +3,6 @@ import axios from 'axios';
 import ApartmentsList from '../components/apartments/ApartmentsList.vue';
 import { RouterLink } from 'vue-router';
 const endpoint = 'http://localhost:8000/api/apartments/';
-const endpointAddressSearch = 'http://localhost:8000/api/apartments/search/'
 export default {
     name: 'HomePage',
     components: { ApartmentsList },
@@ -16,22 +15,6 @@ export default {
             axios.get(endpoint).then(res => {
                 this.apartments = res.data
             })
-        },
-        searchApartmentsWithAddress() {
-
-            // Se non è stato cercato nessun indirizzo, esegue fetchApartments
-            if (!this.searchAddress) {
-                this.fetchApartments()
-
-            } else {
-                axios.get(endpointAddressSearch, {
-                    params: {
-                        address: this.searchAddress
-                    }
-                }).then(res => {
-                    this.apartments = res.data;
-                })
-            }
         }
     },
     created() {
@@ -50,9 +33,8 @@ export default {
                     <p class="">Alloggi e stanze per ogni tipo di esigenza</p>
                     <form @submit.prevent>
                         <label for="search-address">Dove</label>
-                        <input @keyup.enter="searchApartmentsWithAddress" id="search-address" type="address"
-                            v-model="searchAddress">
-                        <button type="button" @click="searchApartmentsWithAddress">Cerca</button>
+                        <input id="search-address" type="address" v-model="searchAddress">
+                        <button type="button">Cerca</button>
                         <RouterLink :to="{ name: 'filtered-apartments', query: { address: searchAddress } }">Cerca
                         </RouterLink>
                     </form>

@@ -9,7 +9,7 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: "/", name: "home", component: HomePage }, ,
-        { path: "/filtered-apartments", name: "filtered-apartments", component: FilteredApartmentPage },
+        { path: "/filtered-apartments", name: "filtered-apartments", component: FilteredApartmentPage, props: route => ({ address: route.query.address }) },
         { path: '/not-found', component: NotFoundPage, name: 'not-found' },
         { path: '/detail-page/:slug', component: DetailPage, name: 'detail-page' },
         { path: "/:pathMatch(.*)*", redirect: "/not-found" }

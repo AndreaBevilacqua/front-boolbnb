@@ -11,6 +11,9 @@ export default {
         apartments: [],
         searchAddress: ''
     }),
+    props: {
+        address: String
+    },
     methods: {
         fetchApartments() {
             axios.get(endpoint).then(res => {
@@ -19,12 +22,10 @@ export default {
         },
         async searchApartmentsWithAddress(address = null) {
             // Se non è stato inserito alcun indirizzo, esegue fetchApartments
-            if (!this.searchAddress) {
+            if (!address) {
                 this.fetchApartments();
             } else {
                 try {
-
-                    // const endpointAddressSearch = `${endpoint}?address=${this.searchAddress}`;
                     const res = await axios.get(endpointAddressSearch, {
                         params: {
                             address
@@ -39,7 +40,7 @@ export default {
         }
     },
     created() {
-        this.fetchApartments(this.$route.params.address);
+        this.searchApartmentsWithAddress(this.address);
     }
 }
 </script>
@@ -48,8 +49,8 @@ export default {
     <!-- Ricerca di un appartamento -->
     <div class="searchbar rounded-pill p-2 shadow-sm container">
         <form @submit.prevent class="d-flex justify-content-between align-items-center">
-            <input @keyup.enter="searchApartmentsWithAddress" type="search" id="place" class="ms-3 radius"
-                placeholder="Inserisci un indirizzo" v-model="searchAddress">
+            <input @keyup.enter="searchApartmentsWithAddress(searchAddress)" type="search" id="place"
+                class="ms-3 radius" placeholder="Inserisci un indirizzo" v-model="searchAddress">
             <button @click="searchApartmentsWithAddress(searchAddress)" type="button"
                 class="btn btn-primary rounded-pill">Cerca</button>
         </form>
