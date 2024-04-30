@@ -9,7 +9,8 @@ export default {
     components: { ApartmentsList },
     data: () => ({
         apartments: [],
-        searchAddress: ''
+        searchAddress: '',
+        isLoading: false
     }),
     props: {
         address: String
@@ -18,9 +19,12 @@ export default {
         fetchApartments() {
             axios.get(endpoint).then(res => {
                 this.apartments = res.data
+                this.isLoading = false
             })
         },
         async searchApartmentsWithAddress(address = null) {
+            this.isLoading = true
+
             // Se non è stato inserito alcun indirizzo, esegue fetchApartments
             if (!address) {
                 this.fetchApartments();
@@ -34,6 +38,8 @@ export default {
                     this.apartments = res.data;
                 } catch (err) {
                     console.error(err);
+                } finally {
+                    this.isLoading = false
                 }
 
             }
@@ -56,6 +62,7 @@ export default {
         </form>
     </div>
 
+    <AppLoader v-if="isLoading" />
     <ApartmentsList :apartments="apartments" />
 </template>
 
@@ -63,8 +70,10 @@ export default {
 .searchbar {
     border: 0.5px solid gray;
 
-    #place {
-        border-style: hidden;
+    input {
+        width: 95%;
+        border: none;
+        outline: none;
     }
 }
 </style>
