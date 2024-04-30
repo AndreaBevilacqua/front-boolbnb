@@ -1,6 +1,7 @@
 <script>
 import axios from 'axios';
 import ApartmentsList from '../components/apartments/ApartmentsList.vue';
+import { RouterLink } from 'vue-router';
 const endpoint = 'http://localhost:8000/api/apartments/';
 const endpointAddressSearch = 'http://localhost:8000/api/apartments/search/'
 export default {
@@ -52,6 +53,8 @@ export default {
                         <input @keyup.enter="searchApartmentsWithAddress" id="search-address" type="address"
                             v-model="searchAddress">
                         <button type="button" @click="searchApartmentsWithAddress">Cerca</button>
+                        <RouterLink :to="{ name: 'filtered-apartments', query: { address: searchAddress } }">Cerca
+                        </RouterLink>
                     </form>
                 </div>
             </div>
