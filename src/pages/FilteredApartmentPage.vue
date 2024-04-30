@@ -17,20 +17,29 @@ export default {
                 this.apartments = res.data
             })
         },
-        searchApartmentsWithAddress() {
+        async searchApartmentsWithAddress(address = null) {
             // Se non è stato inserito alcun indirizzo, esegue fetchApartments
             if (!this.searchAddress) {
                 this.fetchApartments();
             } else {
-                const endpointAddressSearch = `${endpoint}?address=${this.searchAddress}`;
-                axios.get(endpointAddressSearch).then(res => {
+                try {
+
+                    // const endpointAddressSearch = `${endpoint}?address=${this.searchAddress}`;
+                    const res = await axios.get(endpointAddressSearch, {
+                        params: {
+                            address
+                        }
+                    })
                     this.apartments = res.data;
-                });
+                } catch (err) {
+                    console.error(err);
+                }
+
             }
         }
     },
     created() {
-        this.fetchApartments();
+        this.fetchApartments(this.$route.params.address);
     }
 }
 </script>
@@ -38,10 +47,11 @@ export default {
 <template>
     <!-- Ricerca di un appartamento -->
     <div class="searchbar rounded-pill p-2 shadow-sm container">
-        <form @submit.prevent="fetchApartments()" class="d-flex justify-content-between align-items-center">
-            <input type="search" id="place" class="ms-3 radius" placeholder="Inserisci un indirizzo"
-                v-model="this.searchAddress">
-            <button type="submit" class="btn btn-primary rounded-pill">Cerca</button>
+        <form @submit.prevent class="d-flex justify-content-between align-items-center">
+            <input @keyup.enter="searchApartmentsWithAddress" type="search" id="place" class="ms-3 radius"
+                placeholder="Inserisci un indirizzo" v-model="searchAddress">
+            <button @click="searchApartmentsWithAddress(searchAddress)" type="button"
+                class="btn btn-primary rounded-pill">Cerca</button>
         </form>
     </div>
 
