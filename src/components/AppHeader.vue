@@ -1,4 +1,6 @@
 <script>
+import { RouterLink } from 'vue-router';
+
 export default {
     name: 'AppHeader',
 }
@@ -17,11 +19,12 @@ export default {
                 <!-- Left Side Of Navbar -->
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/') }}"><img class="img-fluid" src="../assets/logo.png"
-                                alt="logo">
+                        <RouterLink class="nav-link" :to="{ name: 'home' }"><img class="img-fluid"
+                                src="../assets/logo.png" alt="logo">
                             <span class="fs-1 me-5">
                                 BoolBnB
-                            </span></a>
+                            </span>
+                        </RouterLink>
                     </li>
 
                 </ul>

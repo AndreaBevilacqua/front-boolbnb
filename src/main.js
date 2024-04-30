@@ -1,6 +1,7 @@
 import { createApp } from 'vue'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import App from './App.vue'
+import AppLoader from './components/AppLoader.vue'
 import { router } from './router/index.js'
 
 /* import the fontawesome core */
@@ -17,5 +18,6 @@ import { router } from './router/index.js'
 
 createApp(App)
     // .component('font-awesome-icon', FontAwesomeIcon)
+    .component('AppLoader', AppLoader)
     .use(router)
     .mount('#app')
