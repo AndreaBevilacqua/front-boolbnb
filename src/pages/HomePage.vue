@@ -1,11 +1,12 @@
 <script>
 import axios from 'axios';
+import TomTomAutocomplete from '../components/searchbar/TomTomAutocomplete.vue';
 import ApartmentsList from '../components/apartments/ApartmentsList.vue';
 import { RouterLink } from 'vue-router';
 const endpoint = 'http://localhost:8000/api/apartments/';
 export default {
     name: 'HomePage',
-    components: { ApartmentsList },
+    components: { ApartmentsList, TomTomAutocomplete },
     data: () => ({
         apartments: [],
         searchAddress: '',
@@ -16,7 +17,11 @@ export default {
             axios.get(endpoint).then(res => {
                 this.apartments = res.data
             })
+        },
+        setAddress(address) {
+            this.searchAddress = address;
         }
+
     },
     created() {
         this.fetchApartments();
@@ -33,8 +38,7 @@ export default {
                     <h3 class="card-title">Trova alloggi su Boolbnb</h3>
                     <p class="">Alloggi e stanze per ogni tipo di esigenza</p>
                     <form @submit.prevent>
-                        <label for="search-address">Dove</label>
-                        <input id="search-address" type="address" v-model="searchAddress">
+                        <TomTomAutocomplete @selectAddress="setAddress" />
                         <RouterLink class="bnt button"
                             :to="{ name: 'filtered-apartments', query: { address: searchAddress } }">Cerca
                         </RouterLink>
@@ -69,7 +73,6 @@ export default {
     .card {
         border: none;
         width: 500px;
-        height: 300px;
         border-radius: 25px;
         box-shadow: 5px 5px 30px gray;
 
