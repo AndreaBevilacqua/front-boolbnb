@@ -1,17 +1,3 @@
-<template>
-    <div>
-        <label for="search-address">Dove</label>
-        <input autocomplete="off" id="search-address" v-model="searchQuery" @input="search"
-            placeholder="Cerca indirizzo">
-        <ul class="list-group" v-if="results.length">
-            <li class="list-group-item" v-for="(result, index) in results" :key="index" @click="selectResult(result)">
-                <!-- @click="$emit('selectAddress', result.address.freeformAddress)"> -->
-                {{ result.address.freeformAddress }}
-            </li>
-        </ul>
-    </div>
-</template>
-
 <script>
 import axios from 'axios';
 
@@ -24,8 +10,8 @@ export default {
     },
     methods: {
         search() {
-            if (this.searchQuery.length > 2) {
-                axios.get('https://api.tomtom.com/search/2/search/' + this.searchQuery + '.json?key=JCA7jDznFGPlGy91V9K6LVAp8heuxKMU&limit=4')
+            if (this.searchQuery.length > 3) {
+                axios.get('https://api.tomtom.com/search/2/search/' + this.searchQuery + '.json?key=JCA7jDznFGPlGy91V9K6LVAp8heuxKMU&limit=4&language=it-IT')
                     .then(response => {
                         this.results = response.data.results;
                     })
@@ -48,6 +34,23 @@ export default {
 
 };
 </script>
+
+<template>
+    <div>
+        <label for="search-address">Dove</label>
+        <input autocomplete="off" id="search-address" v-model="searchQuery" @input="search"
+            placeholder="Cerca indirizzo">
+        <ul class="list-group" v-if="results.length">
+            <li class="list-group-item" v-for="(result, index) in results" :key="index" @click="selectResult(result)">
+                <!-- @click="$emit('selectAddress', result.address.freeformAddress)"> -->
+                {{ result.address.freeformAddress }}
+            </li>
+        </ul>
+    </div>
+</template>
+
+
+
 <style scoped lang="scss">
 input {
     display: block;

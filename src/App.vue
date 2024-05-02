@@ -1,10 +1,15 @@
 <script>
 import AppHeader from './components/AppHeader.vue';
 import AppFooter from './components/AppFooter.vue';
+import { store } from './assets/Data/store';
+
 
 export default {
   name: 'Boolbnb',
   components: { AppHeader, AppFooter },
+  data: () => ({
+    store
+  })
 }
 </script>
 
@@ -12,6 +17,7 @@ export default {
   <AppHeader />
   <main>
     <RouterView />
+    <AppLoader v-if="store.isLoading" />
   </main>
   <AppFooter />
 </template>
