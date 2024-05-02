@@ -1,10 +1,12 @@
 <script>
-import axios from 'axios';
+import axios, { isCancel } from 'axios';
 const endpoint = 'http://localhost:8000/api/apartments/';
 export default {
     name: 'DetailPage',
     data: () => ({
-        apartment: null
+        apartment: null,
+        carouselImages: [],
+        currentIndex: 0,
     }),
     methods: {
         async getApartment() {
@@ -16,12 +18,26 @@ export default {
                 this.$router.push({ name: 'not-fount' })
             }
 
+            this.carouselImages.push(this.apartment.image)
+            for (let image of this.apartment.images) {
+                this.carouselImages.push(image.path)
+            }
 
+        },
+        goToNext() {
+            const lastElementIndex = this.carouselImages.length - 1;
+            if (this.currentIndex === lastElementIndex) this.currentIndex = 0;
+            else this.currentIndex++
+        },
+        goToPrev() {
+            const lastElementIndex = this.carouselImages.length - 1;
+            if (this.currentIndex === 0) this.currentIndex = lastElementIndex;
+            else this.currentIndex--
         }
+
     },
     created() {
         this.getApartment();
-
     }
 }
 </script>
@@ -30,15 +46,27 @@ export default {
     <div class="container" v-if="apartment">
         <h4>{{ apartment.title }}</h4>
         <span>{{ apartment.address }}.</span>
-        <div class="row">
-            <div class="col-8">
-                <img class="primary-img" :src="apartment.image" :alt="apartment.title">
+        <!-- carosello  -->
+        <div class="carousel">
+
+            <!-- prev button -->
+            <i class="fas fa-arrow-left" @click="goToPrev"></i>
+
+            <div class="gallery">
+                <!-- immagine principale-->
+                <figure v-for="(image, i) in   carouselImages" v-show="currentIndex === i">
+                    <img class="primary-img" :src="image" :alt="apartment.title">
+                </figure>
             </div>
-            <div class="col-4">
-                <div v-for="image in apartment.images">
-                    <img :src="image.path" :alt="image.id">
-                </div>
-            </div>
+
+            <!-- next button -->
+            <i class="fas fa-arrow-right" @click="goToNext"></i>
+
+        </div>
+        <!-- thumbnails -->
+        <div id="thumbnails">
+            <img @click="currentIndex = i" v-for="(image, i) in   carouselImages" :src="image" :alt="apartment.title"
+                :class="{ active: i === currentIndex }">
         </div>
         <div class="row">
             <div class="col-8">
@@ -59,7 +87,7 @@ export default {
 
                     <ul class="apartment-services">
                         <h5>Servizi</h5>
-                        <li v-for="service in apartment.services">
+                        <li v-for="  service   in   apartment.services  ">
                             <img :src="service.icon" :alt="service.label">
                             {{ service.label }}
                         </li>
@@ -86,7 +114,7 @@ export default {
 
                             <label for="text">Messaggio</label>
                             <input class="message" type="text">
-                            <button type="button" @click="searchApartmentsWithAddress">Invia</button>
+                            <button type="button">Invia</button>
                         </form>
                     </div>
                 </div>
@@ -103,10 +131,62 @@ h4 {
 
 }
 
+
 .primary-img {
     border-radius: 10px;
-    height: 400px;
+    width: 1200px;
+    height: 700px;
+
+
+    margin: 30px;
 }
+
+/* Carosello */
+.active {
+    animation-name: active;
+    animation-duration: 0.5s;
+    box-shadow: 5px 5px 30px #2b8599;
+
+
+}
+
+.carousel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.fas {
+    font-size: 2rem
+}
+
+
+
+.fa-arrow-left {
+    cursor: pointer;
+
+}
+
+.fa-arrow-right {
+    cursor: pointer;
+}
+
+#thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    cursor: pointer;
+    height: 200px;
+
+}
+
+img {
+    border-radius: 10px;
+    height: 130px;
+}
+
+/* info Appartamento  */
 
 .row {
     margin-top: 20px;
@@ -146,6 +226,8 @@ h4 {
 .description {
     margin-bottom: 20px;
 }
+
+/** card messaggistica */
 
 .card {
     border: none;
@@ -205,5 +287,20 @@ h4 {
     background-color: rgb(109, 109, 109, 0.2);
     margin-bottom: 20px;
     max-width: 400px;
+}
+
+@keyframes active {
+    0% {
+        height: 130px;
+
+    }
+
+    50% {
+        height: 131px;
+    }
+
+    100% {
+        height: 130px;
+    }
 }
 </style>
