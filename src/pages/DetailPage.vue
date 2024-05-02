@@ -67,7 +67,7 @@ export default {
             }
         },
         validateForm() {
-            this.formErrors = {};
+            this.formErrors = {}; required
 
             const namePattern = /^[A-Za-z\s]+$/; // Regex per accettare solo lettere e spazi
             if (!this.formData.name.trim()) {
@@ -186,24 +186,24 @@ export default {
                         <p class="">Invia una mail senza doverti iscrivere!</p>
                         <form @submit.prevent="sendMessage">
                             <label for="name">Nome</label>
-                            <input v-model="formData.name" type="text" placeholder="Mario">
+                            <input v-model="formData.name" type="text" placeholder="Mario" required>
                             <div v-if="formErrors.name" class="error"><small>{{ formErrors.name }}</small></div>
 
                             <label for="last_name">Cognome</label>
-                            <input v-model="formData.last_name" type="text" placeholder="Rossi">
+                            <input v-model="formData.last_name" type="text" placeholder="Rossi" required>
                             <div v-if="formErrors.last_name" class="error"><small>{{ formErrors.last_name }}</small>
                             </div>
 
                             <label for="email">E-mail</label>
-                            <input v-model="formData.email" type="email" placeholder="mariorossi@example.com">
+                            <input v-model="formData.email" type="email" placeholder="mariorossi@example.com" required>
                             <div v-if="formErrors.email" class="error"><small>{{ formErrors.email }}</small></div>
 
                             <label for="subject">Oggetto</label>
-                            <input v-model="formData.subject" class="object" type="text">
+                            <input v-model="formData.subject" class="object" type="text" required>
                             <div v-if="formErrors.subject" class="error"><small>{{ formErrors.subject }}</small></div>
 
                             <label for="message">Messaggio</label>
-                            <input v-model="formData.text" class="message" type="text">
+                            <input v-model="formData.text" class="message" type="text" required>
                             <div v-if="formErrors.text" class="error"><small>{{ formErrors.text }}</small></div>
 
                             <button type="submit">Invia</button>
