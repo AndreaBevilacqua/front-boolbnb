@@ -1,10 +1,12 @@
 <script>
-import axios from 'axios';
+import axios, { isCancel } from 'axios';
 const endpoint = 'http://localhost:8000/api/apartments/';
 export default {
     name: 'DetailPage',
     data: () => ({
-        apartment: null
+        apartment: null,
+        carouselImages: [],
+        currentIndex: 0,
     }),
     methods: {
         async getApartment() {
@@ -16,12 +18,16 @@ export default {
                 this.$router.push({ name: 'not-fount' })
             }
 
+            this.carouselImages.push(this.apartment.image)
+            for (let image of this.apartment.images) {
+                this.carouselImages.push(image.path)
+            }
 
-        }
+        },
+
     },
     created() {
         this.getApartment();
-
     }
 }
 </script>
@@ -30,15 +36,24 @@ export default {
     <div class="container" v-if="apartment">
         <h4>{{ apartment.title }}</h4>
         <span>{{ apartment.address }}.</span>
-        <div class="row">
-            <div class="col-8">
-                <img class="primary-img" :src="apartment.image" :alt="apartment.title">
-            </div>
-            <div class="col-4">
-                <div v-for="image in apartment.images">
-                    <img :src="image.path" :alt="image.id">
-                </div>
-            </div>
+        <!-- galleria -->
+        <div class="gallery">
+
+            <!-- prev button -->
+            <i class="fas fa-arrow-left" @click="currentIndex--"></i>
+
+            <!-- immagine principale-->
+            <figure v-for="(image, i) in   carouselImages  " v-show="currentIndex === i">
+                <img class="primary-img" :src="image" :alt="apartment.title">
+            </figure>
+
+            <!-- next button -->
+            <i class="fas fa-arrow-right" @click="currentIndex++"></i>
+
+        </div>
+        <!-- thumbnails -->
+        <div id="thumbnails">
+            <img v-for="(  image, i  ) in   carouselImages  " :src="image" :alt="apartment.title">
         </div>
         <div class="row">
             <div class="col-8">
@@ -59,7 +74,7 @@ export default {
 
                     <ul class="apartment-services">
                         <h5>Servizi</h5>
-                        <li v-for="service in apartment.services">
+                        <li v-for="  service   in   apartment.services  ">
                             <img :src="service.icon" :alt="service.label">
                             {{ service.label }}
                         </li>
@@ -86,7 +101,7 @@ export default {
 
                             <label for="text">Messaggio</label>
                             <input class="message" type="text">
-                            <button type="button" @click="searchApartmentsWithAddress">Invia</button>
+                            <button type="button">Invia</button>
                         </form>
                     </div>
                 </div>
@@ -105,7 +120,44 @@ h4 {
 
 .primary-img {
     border-radius: 10px;
-    height: 400px;
+    width: 1200px;
+
+    margin-bottom: 20px;
+}
+
+/* Carosello */
+.active {}
+
+.gallery {
+    display: flex;
+    align-items: center;
+
+}
+
+.fas {
+    font-size: 2rem
+}
+
+.fa-arrow-left {
+    padding-right: 20px;
+    cursor: pointer;
+
+}
+
+.fa-arrow-right {
+    padding-left: 20px;
+    cursor: pointer;
+}
+
+#thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+
+    img {
+        border-radius: 10px;
+        height: 130px;
+    }
 }
 
 .row {
