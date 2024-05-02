@@ -1,40 +1,125 @@
 <script>
-import axios, { isCancel } from 'axios';
+import axios from 'axios';
+
 const endpoint = 'http://localhost:8000/api/apartments/';
+const messageEndpoint = 'http://localhost:8000/api/contact-message/';
+
 export default {
     name: 'DetailPage',
-    data: () => ({
-        apartment: null,
-        carouselImages: [],
-        currentIndex: 0,
-    }),
+    data() {
+        return {
+            apartment: null,
+            carouselImages: [],
+            currentIndex: 0,
+            formData: {
+                name: '',
+                last_name: '',
+                email: '',
+                subject: '',
+                text: ''
+            },
+            formErrors: {}
+        };
+    },
     methods: {
         async getApartment() {
             try {
-                const res = await axios.get(endpoint + this.$route.params.slug)
-                this.apartment = res.data
+                const res = await axios.get(endpoint + this.$route.params.slug);
+                this.apartment = res.data;
+                this.loadCarouselImages();
             } catch (err) {
-                console.error(err)
-                this.$router.push({ name: 'not-fount' })
+                console.error(err);
+                this.$router.push({ name: 'not-found' });
             }
-
-            this.carouselImages.push(this.apartment.image)
+        },
+        loadCarouselImages() {
+            this.carouselImages.push(this.apartment.image);
             for (let image of this.apartment.images) {
-                this.carouselImages.push(image.path)
+                this.carouselImages.push(image.path);
             }
-
         },
         goToNext() {
             const lastElementIndex = this.carouselImages.length - 1;
             if (this.currentIndex === lastElementIndex) this.currentIndex = 0;
-            else this.currentIndex++
+            else this.currentIndex++;
         },
         goToPrev() {
             const lastElementIndex = this.carouselImages.length - 1;
             if (this.currentIndex === 0) this.currentIndex = lastElementIndex;
-            else this.currentIndex--
-        }
+            else this.currentIndex--;
+        },
+        sendMessage() {
+            if (this.validateForm()) {
+                axios.post(`${messageEndpoint}${this.apartment.id}`, this.formData)
+                    .then(response => {
+                        this.showAlert('Messaggio inviato con successo!', 'success');
+                        setTimeout(() => {
+                            this.closeAlert();
+                        }, 5000);
+                        this.formData = {};
+                    })
+                    .catch(error => {
+                        this.showAlert('Errore durante l\'invio del messaggio. Si prega di riprovare.', 'danger');
+                        setTimeout(() => {
+                            this.closeAlert();
+                        }, 5000);
+                    });
+            }
+        },
+        validateForm() {
+            this.formErrors = {};
 
+            const namePattern = /^[A-Za-z\s]+$/; // Regex per accettare solo lettere e spazi
+            if (!this.formData.name.trim()) {
+                this.formErrors.name = 'Il nome è obbligatorio.';
+            } else if (!namePattern.test(this.formData.name)) {
+                this.formErrors.name = 'Il nome non può contenere simboli.';
+            }
+
+            if (!this.formData.last_name.trim()) {
+                this.formErrors.last_name = 'Il cognome è obbligatorio.';
+            } else if (!namePattern.test(this.formData.last_name)) {
+                this.formErrors.last_name = 'Il cognome non può contenere simboli.';
+            }
+
+            if (!this.formData.email.trim()) {
+                this.formErrors.email = 'L\'email è obbligatoria.';
+            } else if (!this.isValidEmail(this.formData.email)) {
+                this.formErrors.email = 'Inserire un\'email valida.';
+            }
+
+            if (!this.formData.subject.trim()) {
+                this.formErrors.subject = 'L\'oggetto è obbligatorio.';
+            }
+
+            if (!this.formData.text.trim()) {
+                this.formErrors.text = 'Il messaggio è obbligatorio.';
+            }
+
+            return Object.keys(this.formErrors).length === 0;
+        },
+        isValidEmail(email) {
+            // Esempio semplice per la validazione dell'email
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailPattern.test(email);
+        },
+        showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.classList.add('alert', `alert-${type}`, 'mt-3', 'd-flex', 'justify-content-between', 'align-items-center');
+            alert.setAttribute('role', 'alert');
+            alert.innerHTML = `
+                <span>${message}</span>
+                <button type="button" class="btn-close" @click="closeAlert"></button>`;
+
+            const form = document.querySelector('form');
+            form.parentNode.insertBefore(alert, form.nextSibling);
+        },
+        closeAlert() {
+            const alert = document.querySelector('.alert');
+            if (alert) {
+                alert.remove();
+            }
+        }
     },
     created() {
         this.getApartment();
@@ -99,23 +184,31 @@ export default {
                     <div class="card-body">
                         <h3 class="card-title">Contatta il Proprietario</h3>
                         <p class="">Invia una mail senza doverti iscrivere!</p>
-                        <form @submit.prevent>
-                            <label for="text">Nome</label>
-                            <input type="text" placeholder="Mario">
+                        <form @submit.prevent="sendMessage">
+                            <label for="name">Nome</label>
+                            <input v-model="formData.name" type="text" placeholder="Mario">
+                            <div v-if="formErrors.name" class="error"><small>{{ formErrors.name }}</small></div>
 
-                            <label for="text">Cognome</label>
-                            <input type="text" placeholder="Rossi">
+                            <label for="last_name">Cognome</label>
+                            <input v-model="formData.last_name" type="text" placeholder="Rossi">
+                            <div v-if="formErrors.last_name" class="error"><small>{{ formErrors.last_name }}</small>
+                            </div>
 
                             <label for="email">E-mail</label>
-                            <input type="email" placeholder="mariorossi@example.com">
+                            <input v-model="formData.email" type="email" placeholder="mariorossi@example.com">
+                            <div v-if="formErrors.email" class="error"><small>{{ formErrors.email }}</small></div>
 
-                            <label for="text">Ogetto</label>
-                            <input class="object" type="text">
+                            <label for="subject">Oggetto</label>
+                            <input v-model="formData.subject" class="object" type="text">
+                            <div v-if="formErrors.subject" class="error"><small>{{ formErrors.subject }}</small></div>
 
-                            <label for="text">Messaggio</label>
-                            <input class="message" type="text">
-                            <button type="button">Invia</button>
+                            <label for="message">Messaggio</label>
+                            <input v-model="formData.text" class="message" type="text">
+                            <div v-if="formErrors.text" class="error"><small>{{ formErrors.text }}</small></div>
+
+                            <button type="submit">Invia</button>
                         </form>
+
                     </div>
                 </div>
             </div>
@@ -125,6 +218,10 @@ export default {
 </template>
 
 <style scoped lang="scss">
+.error {
+    color: red;
+}
+
 h4 {
     font-size: 2.5rem;
     font-weight: bold;
@@ -267,7 +364,7 @@ img {
             width: 100%;
             height: 2rem;
             padding-left: 10px;
-            margin-bottom: 1rem;
+            /* margin-bottom: 1rem; */
             border-radius: 5px;
             border: 1px solid rgba(128, 128, 128, 0.3);
         }
