@@ -62,26 +62,14 @@ export default {
 
         // Funzione per applicare i filtri
         applyFilters() {
-            // Costruisci l'oggetto dei parametri di filtro
-            const filters = {
-                price: this.priceInput,
-                beds: this.bedsInput,
-                rooms: this.roomsInput,
-                km: this.kmInput,
-                services: this.isChecked
-            };
-
-            // Effettua una richiesta GET al tuo endpoint di filtro con i parametri
-            axios.get(endpointAddressSearch, {
-                params: filters
-            })
-                .then(res => {
-                    // Aggiorna la lista degli appartamenti con i risultati filtrati
-                    this.apartments = res.data;
-                })
-                .catch(err => {
-                    console.error(err);
-                });
+            // Controllo se nessun filtro è stato selezionato
+            if (this.priceInput === 0 && this.bedsInput === 0 && this.roomsInput === 0 && this.kmInput === 20 && this.isChecked.length === 0) {
+                // Se nessun filtro è stato selezionato, richiama la funzione per ottenere tutti gli appartamenti
+                this.fetchApartments();
+            } else {
+                // Altrimenti, applica i filtri
+                this.apartments = this.filteredApartments;
+            }
         },
 
         // Funzione per resettare i filtri
@@ -93,9 +81,53 @@ export default {
             this.isChecked = [];
         }
     },
-    created() {
-        this.searchApartmentsWithAddress(this.address);
-        this.fetchServices();
+
+    computed: {
+        filteredApartments() {
+            let newApartments = this.apartments.filter((item) => {
+                if (this.roomsInput === 0)
+                    return true;
+                else
+                    return item.rooms >= this.roomsInput;
+            });
+
+            newApartments = newApartments.filter((item) => {
+                if (this.priceInput === 0)
+                    return true;
+                else
+                    return item.price_per_night <= this.priceInput;
+            });
+
+            newApartments = newApartments.filter((item) => {
+                if (this.bedsInput === 0)
+                    return true;
+                else
+                    return item.beds >= this.bedsInput;
+            });
+
+            newApartments = newApartments.filter((item) => {
+                if (this.isChecked.length === 0)
+                    return true;
+
+                let checkedServices = item.services.map(service => service.id);
+
+                for (let i = 0; i < this.isChecked.length; i++) {
+                    if (!checkedServices.includes(this.isChecked[i])) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+            return newApartments;
+
+        },
+
+        created() {
+            this.searchApartmentsWithAddress(this.address);
+            this.fetchServices();
+        }
     }
 }
 </script>
@@ -166,7 +198,7 @@ export default {
                                     <option selected value="0">Scegli...</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
-                                    <option value="3">4</option>
+                                    <option value="3">3</option>
                                     <option value="4">4</option>
                                     <option value="5">5</option>
                                     <option value="6">6</option>
@@ -183,7 +215,7 @@ export default {
                                     <option selected value="0">Scegli...</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
-                                    <option value="3">4</option>
+                                    <option value="3">3</option>
                                     <option value="4">4</option>
                                     <option value="5">5</option>
                                     <option value="6">6</option>
@@ -201,9 +233,9 @@ export default {
                         </div>
                         <div class="row row-cols-1">
                             <div class="form-check p-0">
-                                <div class="mb-1" v-for="service in services">
+                                <div class="mb-1" v-for="service in services" :key="service.id">
                                     <input class="form-check-input ms-2" type="checkbox" id="service"
-                                        v-model="isChecked">
+                                        v-model="isChecked" :value="service.id">
                                     <label class="form-check-label ms-2" for="service">
                                         {{ service.label }}
                                     </label>
@@ -223,6 +255,8 @@ export default {
     </div>
 
     <AppLoader v-if="isLoading" />
+
+    <h1 class="mt-5 mb-3">Appartamenti BoolBnb</h1>
     <ApartmentsList :apartments="apartments" />
 </template>
 
