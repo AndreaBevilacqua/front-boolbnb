@@ -62,7 +62,26 @@ export default {
 
         // Funzione per applicare i filtri
         applyFilters() {
-            this.searchApartmentsWithAddress();
+            // Costruisci l'oggetto dei parametri di filtro
+            const filters = {
+                price: this.priceInput,
+                beds: this.bedsInput,
+                rooms: this.roomsInput,
+                km: this.kmInput,
+                services: this.isChecked
+            };
+
+            // Effettua una richiesta GET al tuo endpoint di filtro con i parametri
+            axios.get(endpointAddressSearch, {
+                params: filters
+            })
+                .then(res => {
+                    // Aggiorna la lista degli appartamenti con i risultati filtrati
+                    this.apartments = res.data;
+                })
+                .catch(err => {
+                    console.error(err);
+                });
         },
 
         // Funzione per resettare i filtri
