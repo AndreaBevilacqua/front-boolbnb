@@ -40,7 +40,6 @@ export default {
             // Fai qualcosa con il risultato selezionato, ad esempio puoi inserirlo nell'input o fare altre operazioni
             this.searchQuery = result.address.freeformAddress;
             this.$emit('selectAddress', this.searchQuery)
-            console.log(result)
             this.results = []
 
         }
