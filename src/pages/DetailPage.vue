@@ -54,7 +54,7 @@ export default {
 
             <div class="gallery">
                 <!-- immagine principale-->
-                <figure v-for="(image, i) in   carouselImages  " v-show="currentIndex === i">
+                <figure v-for="(image, i) in   carouselImages" v-show="currentIndex === i">
                     <img class="primary-img" :src="image" :alt="apartment.title">
                 </figure>
             </div>
@@ -65,9 +65,8 @@ export default {
         </div>
         <!-- thumbnails -->
         <div id="thumbnails">
-            <figure v-for="(  image, i  ) in   carouselImages" @click="i === currentIndex">
-                <img :src="image" :alt="apartment.title" :class="{ active: i === currentIndex }">
-            </figure>
+            <img @click="currentIndex = i" v-for="(image, i) in   carouselImages" :src="image" :alt="apartment.title"
+                :class="{ active: i === currentIndex }">
         </div>
         <div class="row">
             <div class="col-8">
@@ -146,7 +145,7 @@ h4 {
 .active {
     animation-name: active;
     animation-duration: 0.5s;
-    box-shadow: 5px 5px 30px #4BC9E4;
+    box-shadow: 5px 5px 30px #2b8599;
 
 
 }
