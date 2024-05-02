@@ -1,45 +1,91 @@
 <script>
-import axios, { isCancel } from 'axios';
+import axios from 'axios';
+
 const endpoint = 'http://localhost:8000/api/apartments/';
+const messageEndpoint = 'http://localhost:8000/api/contact-message/';
+
 export default {
     name: 'DetailPage',
-    data: () => ({
-        apartment: null,
-        carouselImages: [],
-        currentIndex: 0,
-    }),
+    data() {
+        return {
+            apartment: null,
+            carouselImages: [],
+            currentIndex: 0,
+            formData: {
+                name: '',
+                last_name: '',
+                email: '',
+                subject: '',
+                text: ''
+            }
+        };
+    },
     methods: {
         async getApartment() {
             try {
-                const res = await axios.get(endpoint + this.$route.params.slug)
-                this.apartment = res.data
+                const res = await axios.get(endpoint + this.$route.params.slug);
+                this.apartment = res.data;
+                this.loadCarouselImages();
             } catch (err) {
-                console.error(err)
-                this.$router.push({ name: 'not-fount' })
+                console.error(err);
+                this.$router.push({ name: 'not-found' });
             }
-
-            this.carouselImages.push(this.apartment.image)
+        },
+        loadCarouselImages() {
+            this.carouselImages.push(this.apartment.image);
             for (let image of this.apartment.images) {
-                this.carouselImages.push(image.path)
+                this.carouselImages.push(image.path);
             }
-
         },
         goToNext() {
             const lastElementIndex = this.carouselImages.length - 1;
             if (this.currentIndex === lastElementIndex) this.currentIndex = 0;
-            else this.currentIndex++
+            else this.currentIndex++;
         },
         goToPrev() {
             const lastElementIndex = this.carouselImages.length - 1;
             if (this.currentIndex === 0) this.currentIndex = lastElementIndex;
-            else this.currentIndex--
-        }
+            else this.currentIndex--;
+        },
+        sendMessage() {
+            axios.post(`${messageEndpoint}${this.apartment.id}`, this.formData)
+                .then(response => {
+                    this.showAlert('Messaggio inviato con successo!', 'success');
+                    setTimeout(() => {
+                        this.closeAlert();
+                    }, 5000);
+                    this.formData = {};
+                })
+                .catch(error => {
+                    this.showAlert('Errore durante l\'invio del messaggio. Si prega di riprovare.', 'danger');
+                    setTimeout(() => {
+                        this.closeAlert();
+                    }, 5000);
+                });
+        },
+        showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.classList.add('alert', `alert-${type}`, 'mt-3', 'd-flex', 'justify-content-between', 'align-items-center');
+            alert.setAttribute('role', 'alert');
+            alert.innerHTML = `
+                <span>${message}</span>
+                <button type="button" class="btn-close" @click="closeAlert"></button>`;
 
+            const form = document.querySelector('form');
+            form.parentNode.insertBefore(alert, form.nextSibling);
+        },
+        closeAlert() {
+            const alert = document.querySelector('.alert');
+            if (alert) {
+                alert.remove();
+            }
+        }
     },
     created() {
         this.getApartment();
     }
 }
+
 </script>
 
 <template>
@@ -99,22 +145,22 @@ export default {
                     <div class="card-body">
                         <h3 class="card-title">Contatta il Proprietario</h3>
                         <p class="">Invia una mail senza doverti iscrivere!</p>
-                        <form @submit.prevent>
-                            <label for="text">Nome</label>
-                            <input type="text" placeholder="Mario">
+                        <form @submit.prevent="sendMessage">
+                            <label for="name">Nome</label>
+                            <input v-model="formData.name" type="text" placeholder="Mario">
 
-                            <label for="text">Cognome</label>
-                            <input type="text" placeholder="Rossi">
+                            <label for="last_name">Cognome</label>
+                            <input v-model="formData.last_name" type="text" placeholder="Rossi">
 
                             <label for="email">E-mail</label>
-                            <input type="email" placeholder="mariorossi@example.com">
+                            <input v-model="formData.email" type="email" placeholder="mariorossi@example.com">
 
-                            <label for="text">Ogetto</label>
-                            <input class="object" type="text">
+                            <label for="subject">Oggetto</label>
+                            <input v-model="formData.subject" class="object" type="text">
 
-                            <label for="text">Messaggio</label>
-                            <input class="message" type="text">
-                            <button type="button">Invia</button>
+                            <label for="message">Messaggio</label>
+                            <input v-model="formData.text" class="message" type="text">
+                            <button type="submit">Invia</button>
                         </form>
                     </div>
                 </div>
