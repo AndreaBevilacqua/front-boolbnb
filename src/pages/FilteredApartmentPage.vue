@@ -107,17 +107,29 @@ export default {
 
             newApartments = newApartments.filter((item) => {
                 if (this.isChecked.length === 0)
-                    return true;
+                    return newApartments;
 
-                let checkedServices = item.services.map(service => service.id);
+                else {
 
-                for (let i = 0; i < this.isChecked.length; i++) {
-                    if (!checkedServices.includes(this.isChecked[i])) {
-                        return false;
-                    }
+                    let boolean = true;
+
+                    let servicesId = [];
+
+                    item.services.forEach(element => {
+                        servicesId.push(element.id);
+                    });
+
+                    this.isChecked.forEach(serviceChecked => {
+
+                        if (!servicesId.includes(serviceChecked)) {
+                            boolean = false;
+                            return boolean;
+                        }
+                    });
+
+                    return boolean;
+
                 }
-
-                return true;
             });
 
             return newApartments;
