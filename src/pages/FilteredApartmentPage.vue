@@ -1,9 +1,10 @@
 <script>
 import axios from 'axios';
 import ApartmentsList from '../components/apartments/ApartmentsList.vue';
+import { store } from '../assets/Data/store';
 const endpoint = 'http://localhost:8000/api/apartments/';
 const endpointAddressSearch = 'http://localhost:8000/api/apartments/search';
-const endpointServices = 'http://localhost:8000/api/apartments/services';
+const endpointServices = 'http://localhost:8000/api/apartments/services/';
 
 
 export default {
@@ -12,26 +13,34 @@ export default {
     data: () => ({
         apartments: [],
         services: [],
-        isChecked: [],
+        checkedServices: [],
         searchAddress: '',
-        isLoading: false,
         priceInput: 0,
         bedsInput: 0,
         roomsInput: 0,
-        kmInput: 20
+        kmInput: 20,
+        store
     }),
     props: {
         address: String,
     },
     methods: {
+        setPriceInput() {
+            if (!this.priceInput) this.priceInput = 0;
+        },
         fetchApartments() {
+            store.isLoading = true
             axios.get(endpoint).then(res => {
                 this.apartments = res.data
                 this.isLoading = false
+            }).catch(err => {
+                console.error(err)
+            }).then(() => {
+                store.isLoading = false;
             })
         },
         async searchApartmentsWithAddress(address = null) {
-            this.isLoading = true
+            store.isLoading = true
 
             // Se non è stato inserito alcun indirizzo, esegue fetchApartments
             if (!address) {
@@ -40,106 +49,82 @@ export default {
                 try {
                     const res = await axios.get(endpointAddressSearch, {
                         params: {
-                            address
+                            address,
+                            distance: this.kmInput
                         }
                     })
                     this.apartments = res.data;
                 } catch (err) {
                     console.error(err);
                 } finally {
-                    this.isLoading = false
+                    store.isLoading = false
                 }
 
             }
         },
-
         // Funzione per ottenere i servizi
         fetchServices() {
             axios.get(endpointServices).then(res => {
                 this.services = res.data
+            }).catch(err => {
+                console.error(err)
             })
         },
-
-        // Funzione per applicare i filtri
-        applyFilters() {
-            // Controllo se nessun filtro è stato selezionato
-            if (this.priceInput === 0 && this.bedsInput === 0 && this.roomsInput === 0 && this.kmInput === 20 && this.isChecked.length === 0) {
-                // Se nessun filtro è stato selezionato, richiama la funzione per ottenere tutti gli appartamenti
-                this.fetchApartments();
-            } else {
-                // Altrimenti, applica i filtri
-                this.apartments = this.filteredApartments;
-            }
-        },
-
         // Funzione per resettare i filtri
         resetFilters() {
             this.priceInput = 0;
             this.bedsInput = 0;
             this.roomsInput = 0;
             this.kmInput = 20;
-            this.isChecked = [];
+            this.checkedServices = [];
         }
     },
-
     computed: {
         filteredApartments() {
-            let newApartments = this.apartments.filter((item) => {
+            let newApartments = this.apartments.filter((apartment) => {
                 if (this.roomsInput === 0)
                     return true;
-                else
-                    return item.rooms >= this.roomsInput;
+                else if (this.roomsInput === 8) {
+                    return apartment.rooms >= this.roomsInput;
+                } else {
+                    return apartment.rooms == this.roomsInput;
+                }
             });
-
-            newApartments = newApartments.filter((item) => {
+            newApartments = newApartments.filter((apartment) => {
                 if (this.priceInput === 0)
                     return true;
                 else
-                    return item.price_per_night <= this.priceInput;
+                    return apartment.price_per_night <= this.priceInput;
             });
-
-            newApartments = newApartments.filter((item) => {
+            newApartments = newApartments.filter((apartment) => {
                 if (this.bedsInput === 0)
                     return true;
-                else
-                    return item.beds >= this.bedsInput;
-            });
-
-            newApartments = newApartments.filter((item) => {
-                if (this.isChecked.length === 0)
-                    return newApartments;
-
-                else {
-
-                    let boolean = true;
-
-                    let servicesId = [];
-
-                    item.services.forEach(element => {
-                        servicesId.push(element.id);
-                    });
-
-                    this.isChecked.forEach(serviceChecked => {
-
-                        if (!servicesId.includes(serviceChecked)) {
-                            boolean = false;
-                            return boolean;
-                        }
-                    });
-
-                    return boolean;
-
+                else if (this.bedsInput === 8) {
+                    return apartment.beds >= this.bedsInput;
+                } else {
+                    return apartment.beds == this.bedsInput
                 }
             });
-
+            newApartments = newApartments.filter((apartment) => {
+                if (this.checkedServices.length === 0)
+                    return true;
+                else {
+                    const serviceIdsInApartment = apartment.services.map(service => service.id)
+                    const allServicesIncluded = this.checkedServices.every(serviceId => serviceIdsInApartment.includes(serviceId))
+                    return allServicesIncluded
+                }
+            });
             return newApartments;
-
         },
-
-        created() {
-            this.searchApartmentsWithAddress(this.address);
-            this.fetchServices();
-        }
+        // created() {                                                      ANDREAAAAAAAAAAAAA GUARDA DOVE STAVA IL CREATED
+        // this.searchApartmentsWithAddress(this.$route.query.address);
+        // this.fetchServices();
+        // this.searchAddress = this.$route.query.address;
+    },
+    created() {
+        this.searchApartmentsWithAddress(this.$route.query.address);
+        this.fetchServices();
+        this.searchAddress = this.$route.query.address;
     }
 }
 </script>
@@ -158,7 +143,7 @@ export default {
 
         <!-- Bottone per Filtrare -->
         <button id="filters-button" type="button" class="rounded-pill p-3 shadow-sm d-flex align-items-center gap-2"
-            data-bs-toggle="modal" data-bs-target="#exampleModal2">
+            data-bs-toggle="modal" data-bs-target="#exampleModal2" @click="fetchServices">
             <font-awesome-icon icon="fa-solid fa-sort" />Filtri avanzati
         </button>
 
@@ -176,7 +161,7 @@ export default {
                         <!-- Range per km -->
                         <div class="mb-3">
                             <label for="km" class="form-label">
-                                Distanza / km
+                                Distanza / km {{ kmInput }}
                             </label>
                             <div class="range-wrap">
                                 <input type="range" class="form-range" id="km" min="1" max="20" step="1"
@@ -199,7 +184,7 @@ export default {
                             <div class="input-group">
                                 <span class="input-group-text">&euro;</span>
                                 <input type="number" class="form-control" id="price" aria-label="0.00" step="10"
-                                    min="10" max="9999.99" v-model="priceInput">
+                                    min="10" max="9999.99" v-model="priceInput" @blur="setPriceInput">
                             </div>
                         </div>
                         <div class="row">
@@ -215,9 +200,7 @@ export default {
                                     <option value="5">5</option>
                                     <option value="6">6</option>
                                     <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
+                                    <option value="8">8+</option>
                                 </select>
                             </div>
                             <!-- Numero posti letto -->
@@ -232,9 +215,8 @@ export default {
                                     <option value="5">5</option>
                                     <option value="6">6</option>
                                     <option value="7">7</option>
-                                    <option value="8">8</option>
-                                    <option value="9">9</option>
-                                    <option value="10">10</option>
+                                    <option value="8">8+</option>
+
                                 </select>
                             </div>
                         </div>
@@ -247,7 +229,7 @@ export default {
                             <div class="form-check p-0">
                                 <div class="mb-1" v-for="service in services" :key="service.id">
                                     <input class="form-check-input ms-2" type="checkbox" :id="`service-${service.id}`"
-                                        v-model="isChecked" :value="service.id">
+                                        v-model="checkedServices" :value="service.id">
                                     <label class="form-check-label ms-2" :for="`service-${service.id}`">
                                         {{ service.label }}
                                     </label>
@@ -259,17 +241,14 @@ export default {
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" @click="resetFilters()">Rimuovi filtri</button>
                         <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
-                            @click="applyFilters()">Applica Filtri</button>
+                            @click="searchApartmentsWithAddress(searchAddress)">Applica Filtri</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <AppLoader v-if="isLoading" />
-
     <h1 class="mt-5 mb-3">Appartamenti BoolBnb</h1>
-    <ApartmentsList :apartments="apartments" />
+    <ApartmentsList v-if="!store.isLoading && apartments" :apartments="filteredApartments" />
 </template>
 
 <style scoped lang="scss">

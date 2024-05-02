@@ -3,6 +3,7 @@ import axios from 'axios';
 import TomTomAutocomplete from '../components/searchbar/TomTomAutocomplete.vue';
 import ApartmentsList from '../components/apartments/ApartmentsList.vue';
 import { RouterLink } from 'vue-router';
+import { store } from '../assets/Data/store';
 const endpoint = 'http://localhost:8000/api/apartments/';
 export default {
     name: 'HomePage',
@@ -10,12 +11,17 @@ export default {
     data: () => ({
         apartments: [],
         searchAddress: '',
+        store
     }),
     methods: {
         fetchApartments() {
-            this.isLoading = true
+            store.isLoading = true
             axios.get(endpoint).then(res => {
                 this.apartments = res.data
+            }).catch(err => {
+                console.error(err)
+            }).then(() => {
+                store.isLoading = false;
             })
         },
         setAddress(address) {
@@ -48,7 +54,7 @@ export default {
             <img src="../assets/homephoto.jpg" alt="homephoto">
         </section>
 
-        <!-- <ApartmentsList :apartments="apartments" /> -->
+        <ApartmentsList v-if="!store.isLoading && apartments" :apartments="apartments" />
     </div>
 
 </template>
