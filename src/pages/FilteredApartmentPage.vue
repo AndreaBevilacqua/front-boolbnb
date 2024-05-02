@@ -246,9 +246,9 @@ export default {
                         <div class="row row-cols-1">
                             <div class="form-check p-0">
                                 <div class="mb-1" v-for="service in services" :key="service.id">
-                                    <input class="form-check-input ms-2" type="checkbox" id="service"
+                                    <input class="form-check-input ms-2" type="checkbox" :id="`service-${service.id}`"
                                         v-model="isChecked" :value="service.id">
-                                    <label class="form-check-label ms-2" for="service">
+                                    <label class="form-check-label ms-2" :for="`service-${service.id}`">
                                         {{ service.label }}
                                     </label>
                                 </div>
