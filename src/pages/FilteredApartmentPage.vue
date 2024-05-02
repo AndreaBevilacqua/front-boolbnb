@@ -3,6 +3,7 @@ import axios from 'axios';
 import ApartmentsList from '../components/apartments/ApartmentsList.vue';
 const endpoint = 'http://localhost:8000/api/apartments/';
 const endpointAddressSearch = 'http://localhost:8000/api/apartments/search';
+const endpointServices = 'http://localhost:8000/api/apartments/services';
 
 
 export default {
@@ -10,11 +11,17 @@ export default {
     components: { ApartmentsList },
     data: () => ({
         apartments: [],
+        services: [],
+        isChecked: [],
         searchAddress: '',
-        isLoading: false
+        isLoading: false,
+        priceInput: 0,
+        bedsInput: 0,
+        roomsInput: 0,
+        kmInput: 20
     }),
     props: {
-        address: String
+        address: String,
     },
     methods: {
         fetchApartments() {
@@ -44,10 +51,32 @@ export default {
                 }
 
             }
+        },
+
+        // Funzione per ottenere i servizi
+        fetchServices() {
+            axios.get(endpointServices).then(res => {
+                this.services = res.data
+            })
+        },
+
+        // Funzione per applicare i filtri
+        applyFilters() {
+            this.searchApartmentsWithAddress();
+        },
+
+        // Funzione per resettare i filtri
+        resetFilters() {
+            this.priceInput = 0;
+            this.bedsInput = 0;
+            this.roomsInput = 0;
+            this.kmInput = 20;
+            this.isChecked = [];
         }
     },
     created() {
         this.searchApartmentsWithAddress(this.address);
+        this.fetchServices();
     }
 }
 </script>
@@ -80,9 +109,25 @@ export default {
                         </h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body p-4">
                         <!-- Range per km -->
-
+                        <div class="mb-3">
+                            <label for="km" class="form-label">
+                                Distanza / km
+                            </label>
+                            <div class="range-wrap">
+                                <input type="range" class="form-range" id="km" min="1" max="20" step="1"
+                                    v-model="kmInput">
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    1 km
+                                </div>
+                                <div>
+                                    20 km
+                                </div>
+                            </div>
+                        </div>
                         <!-- Mappa -->
 
                         <!-- Prezzo -->
@@ -91,14 +136,14 @@ export default {
                             <div class="input-group">
                                 <span class="input-group-text">&euro;</span>
                                 <input type="number" class="form-control" id="price" aria-label="0.00" step="10"
-                                    min="10" max="9999.99">
+                                    min="10" max="9999.99" v-model="priceInput">
                             </div>
                         </div>
                         <div class="row">
                             <!-- Numero di stanze -->
                             <div class="col-6">
                                 <label for="rooms" class="form-label">Numero di stanze</label>
-                                <select name="rooms" id="rooms" class="form-select">
+                                <select name="rooms" id="rooms" class="form-select" v-model="roomsInput">
                                     <option selected value="0">Scegli...</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -115,7 +160,7 @@ export default {
                             <!-- Numero posti letto -->
                             <div class="col-6">
                                 <label for="beds" class="form-label">Numero di letti</label>
-                                <select name="beds" id="beds" class="form-select">
+                                <select name="beds" id="beds" class="form-select" v-model="bedsInput">
                                     <option selected value="0">Scegli...</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -132,11 +177,26 @@ export default {
                         </div>
 
                         <!-- Servizi -->
+                        <div class="mt-3 mb-2 fs-4">
+                            <strong>Servizi</strong>
+                        </div>
+                        <div class="row row-cols-1">
+                            <div class="form-check p-0">
+                                <div class="mb-1" v-for="service in services">
+                                    <input class="form-check-input ms-2" type="checkbox" id="service"
+                                        v-model="isChecked">
+                                    <label class="form-check-label ms-2" for="service">
+                                        {{ service.label }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Rimuovi filtri</button>
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Applica Filtri</button>
+                        <button type="button" class="btn btn-secondary" @click="resetFilters()">Rimuovi filtri</button>
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                            @click="applyFilters()">Applica Filtri</button>
                     </div>
                 </div>
             </div>
