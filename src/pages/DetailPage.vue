@@ -17,7 +17,8 @@ export default {
                 email: '',
                 subject: '',
                 text: ''
-            }
+            },
+            formErrors: {}
         };
     },
     methods: {
@@ -48,20 +49,59 @@ export default {
             else this.currentIndex--;
         },
         sendMessage() {
-            axios.post(`${messageEndpoint}${this.apartment.id}`, this.formData)
-                .then(response => {
-                    this.showAlert('Messaggio inviato con successo!', 'success');
-                    setTimeout(() => {
-                        this.closeAlert();
-                    }, 5000);
-                    this.formData = {};
-                })
-                .catch(error => {
-                    this.showAlert('Errore durante l\'invio del messaggio. Si prega di riprovare.', 'danger');
-                    setTimeout(() => {
-                        this.closeAlert();
-                    }, 5000);
-                });
+            if (this.validateForm()) {
+                axios.post(`${messageEndpoint}${this.apartment.id}`, this.formData)
+                    .then(response => {
+                        this.showAlert('Messaggio inviato con successo!', 'success');
+                        setTimeout(() => {
+                            this.closeAlert();
+                        }, 5000);
+                        this.formData = {};
+                    })
+                    .catch(error => {
+                        this.showAlert('Errore durante l\'invio del messaggio. Si prega di riprovare.', 'danger');
+                        setTimeout(() => {
+                            this.closeAlert();
+                        }, 5000);
+                    });
+            }
+        },
+        validateForm() {
+            this.formErrors = {};
+
+            const namePattern = /^[A-Za-z\s]+$/; // Regex per accettare solo lettere e spazi
+            if (!this.formData.name.trim()) {
+                this.formErrors.name = 'Il nome è obbligatorio.';
+            } else if (!namePattern.test(this.formData.name)) {
+                this.formErrors.name = 'Il nome non può contenere simboli.';
+            }
+
+            if (!this.formData.last_name.trim()) {
+                this.formErrors.last_name = 'Il cognome è obbligatorio.';
+            } else if (!namePattern.test(this.formData.last_name)) {
+                this.formErrors.last_name = 'Il cognome non può contenere simboli.';
+            }
+
+            if (!this.formData.email.trim()) {
+                this.formErrors.email = 'L\'email è obbligatoria.';
+            } else if (!this.isValidEmail(this.formData.email)) {
+                this.formErrors.email = 'Inserire un\'email valida.';
+            }
+
+            if (!this.formData.subject.trim()) {
+                this.formErrors.subject = 'L\'oggetto è obbligatorio.';
+            }
+
+            if (!this.formData.text.trim()) {
+                this.formErrors.text = 'Il messaggio è obbligatorio.';
+            }
+
+            return Object.keys(this.formErrors).length === 0;
+        },
+        isValidEmail(email) {
+            // Esempio semplice per la validazione dell'email
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailPattern.test(email);
         },
         showAlert(message, type) {
             const alert = document.createElement('div');
@@ -85,7 +125,6 @@ export default {
         this.getApartment();
     }
 }
-
 </script>
 
 <template>
@@ -148,20 +187,28 @@ export default {
                         <form @submit.prevent="sendMessage">
                             <label for="name">Nome</label>
                             <input v-model="formData.name" type="text" placeholder="Mario">
+                            <div v-if="formErrors.name" class="error"><small>{{ formErrors.name }}</small></div>
 
                             <label for="last_name">Cognome</label>
                             <input v-model="formData.last_name" type="text" placeholder="Rossi">
+                            <div v-if="formErrors.last_name" class="error"><small>{{ formErrors.last_name }}</small>
+                            </div>
 
                             <label for="email">E-mail</label>
                             <input v-model="formData.email" type="email" placeholder="mariorossi@example.com">
+                            <div v-if="formErrors.email" class="error"><small>{{ formErrors.email }}</small></div>
 
                             <label for="subject">Oggetto</label>
                             <input v-model="formData.subject" class="object" type="text">
+                            <div v-if="formErrors.subject" class="error"><small>{{ formErrors.subject }}</small></div>
 
                             <label for="message">Messaggio</label>
                             <input v-model="formData.text" class="message" type="text">
+                            <div v-if="formErrors.text" class="error"><small>{{ formErrors.text }}</small></div>
+
                             <button type="submit">Invia</button>
                         </form>
+
                     </div>
                 </div>
             </div>
@@ -171,6 +218,10 @@ export default {
 </template>
 
 <style scoped lang="scss">
+.error {
+    color: red;
+}
+
 h4 {
     font-size: 2.5rem;
     font-weight: bold;
@@ -313,7 +364,7 @@ img {
             width: 100%;
             height: 2rem;
             padding-left: 10px;
-            margin-bottom: 1rem;
+            /* margin-bottom: 1rem; */
             border-radius: 5px;
             border: 1px solid rgba(128, 128, 128, 0.3);
         }
