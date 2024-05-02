@@ -24,6 +24,16 @@ export default {
             }
 
         },
+        goToNext() {
+            const lastElementIndex = this.carouselImages.length - 1;
+            if (this.currentIndex === lastElementIndex) this.currentIndex = 0;
+            else this.currentIndex++
+        },
+        goToPrev() {
+            const lastElementIndex = this.carouselImages.length - 1;
+            if (this.currentIndex === 0) this.currentIndex = lastElementIndex;
+            else this.currentIndex--
+        }
 
     },
     created() {
@@ -36,24 +46,28 @@ export default {
     <div class="container" v-if="apartment">
         <h4>{{ apartment.title }}</h4>
         <span>{{ apartment.address }}.</span>
-        <!-- galleria -->
-        <div class="gallery">
+        <!-- carosello  -->
+        <div class="carousel">
 
             <!-- prev button -->
-            <i class="fas fa-arrow-left" @click="currentIndex--"></i>
+            <i class="fas fa-arrow-left" @click="goToPrev"></i>
 
-            <!-- immagine principale-->
-            <figure v-for="(image, i) in   carouselImages  " v-show="currentIndex === i">
-                <img class="primary-img" :src="image" :alt="apartment.title">
-            </figure>
+            <div class="gallery">
+                <!-- immagine principale-->
+                <figure v-for="(image, i) in   carouselImages  " v-show="currentIndex === i">
+                    <img class="primary-img" :src="image" :alt="apartment.title">
+                </figure>
+            </div>
 
             <!-- next button -->
-            <i class="fas fa-arrow-right" @click="currentIndex++"></i>
+            <i class="fas fa-arrow-right" @click="goToNext"></i>
 
         </div>
         <!-- thumbnails -->
         <div id="thumbnails">
-            <img v-for="(  image, i  ) in   carouselImages  " :src="image" :alt="apartment.title">
+            <figure v-for="(  image, i  ) in   carouselImages" @click="i === currentIndex">
+                <img :src="image" :alt="apartment.title" :class="{ active: i === currentIndex }">
+            </figure>
         </div>
         <div class="row">
             <div class="col-8">
@@ -118,18 +132,28 @@ h4 {
 
 }
 
+
 .primary-img {
     border-radius: 10px;
     width: 1200px;
+    height: 700px;
 
-    margin-bottom: 20px;
+
+    margin: 30px;
 }
 
 /* Carosello */
-.active {}
+.active {
+    animation-name: active;
+    animation-duration: 0.5s;
+    box-shadow: 5px 5px 30px #4BC9E4;
 
-.gallery {
+
+}
+
+.carousel {
     display: flex;
+    justify-content: center;
     align-items: center;
 
 }
@@ -138,14 +162,14 @@ h4 {
     font-size: 2rem
 }
 
+
+
 .fa-arrow-left {
-    padding-right: 20px;
     cursor: pointer;
 
 }
 
 .fa-arrow-right {
-    padding-left: 20px;
     cursor: pointer;
 }
 
@@ -153,12 +177,17 @@ h4 {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
+    cursor: pointer;
+    height: 200px;
 
-    img {
-        border-radius: 10px;
-        height: 130px;
-    }
 }
+
+img {
+    border-radius: 10px;
+    height: 130px;
+}
+
+/* info Appartamento  */
 
 .row {
     margin-top: 20px;
@@ -198,6 +227,8 @@ h4 {
 .description {
     margin-bottom: 20px;
 }
+
+/** card messaggistica */
 
 .card {
     border: none;
@@ -257,5 +288,20 @@ h4 {
     background-color: rgb(109, 109, 109, 0.2);
     margin-bottom: 20px;
     max-width: 400px;
+}
+
+@keyframes active {
+    0% {
+        height: 130px;
+
+    }
+
+    50% {
+        height: 131px;
+    }
+
+    100% {
+        height: 130px;
+    }
 }
 </style>
