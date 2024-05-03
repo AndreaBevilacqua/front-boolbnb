@@ -67,7 +67,7 @@ export default {
             }
         },
         validateForm() {
-            this.formErrors = {}; required
+            this.formErrors = {};
 
             const namePattern = /^[A-Za-z\s]+$/; // Regex per accettare solo lettere e spazi
             if (!this.formData.name.trim()) {
@@ -139,7 +139,7 @@ export default {
 
             <div class="gallery">
                 <!-- immagine principale-->
-                <figure v-for="(image, i) in   carouselImages" v-show="currentIndex === i">
+                <figure v-for="(image, i) in carouselImages" v-show="currentIndex === i">
                     <img class="primary-img" :src="image" :alt="apartment.title">
                 </figure>
             </div>
@@ -150,7 +150,7 @@ export default {
         </div>
         <!-- thumbnails -->
         <div id="thumbnails">
-            <img @click="currentIndex = i" v-for="(image, i) in   carouselImages" :src="image" :alt="apartment.title"
+            <img @click="currentIndex = i" v-for="(image, i) in carouselImages" :src="image" :alt="apartment.title"
                 :class="{ active: i === currentIndex }">
         </div>
         <div class="row">
@@ -172,7 +172,7 @@ export default {
 
                     <ul class="apartment-services">
                         <h5>Servizi</h5>
-                        <li v-for="  service   in   apartment.services  ">
+                        <li v-for="  service in apartment.services  ">
                             <img :src="service.icon" :alt="service.label">
                             {{ service.label }}
                         </li>
@@ -186,27 +186,27 @@ export default {
                         <p class="">Invia una mail senza doverti iscrivere!</p>
                         <form @submit.prevent="sendMessage">
                             <label for="name">Nome</label>
-                            <input v-model="formData.name" type="text" placeholder="Mario" required>
+                            <input v-model="formData.name" type="text" placeholder="Mario">
                             <div v-if="formErrors.name" class="error"><small>{{ formErrors.name }}</small></div>
 
                             <label for="last_name">Cognome</label>
-                            <input v-model="formData.last_name" type="text" placeholder="Rossi" required>
+                            <input v-model="formData.last_name" type="text" placeholder="Rossi">
                             <div v-if="formErrors.last_name" class="error"><small>{{ formErrors.last_name }}</small>
                             </div>
 
                             <label for="email">E-mail</label>
-                            <input v-model="formData.email" type="email" placeholder="mariorossi@example.com" required>
+                            <input v-model="formData.email" type="email" placeholder="mariorossi@example.com">
                             <div v-if="formErrors.email" class="error"><small>{{ formErrors.email }}</small></div>
 
                             <label for="subject">Oggetto</label>
-                            <input v-model="formData.subject" class="object" type="text" required>
+                            <input v-model="formData.subject" class="object" type="text">
                             <div v-if="formErrors.subject" class="error"><small>{{ formErrors.subject }}</small></div>
 
                             <label for="message">Messaggio</label>
-                            <input v-model="formData.text" class="message" type="text" required>
+                            <input v-model="formData.text" class="message" type="text">
                             <div v-if="formErrors.text" class="error"><small>{{ formErrors.text }}</small></div>
 
-                            <button type="submit">Invia</button>
+                            <button @click="sendMessage" type="submit">Invia</button>
                         </form>
 
                     </div>

@@ -259,7 +259,7 @@ export default {
         </div>
     </div>
     <h1 class="mt-5 mb-3">Appartamenti BoolBnb</h1>
-    <ApartmentsList v-if="!store.isLoading && apartments" :apartments="filteredApartments" />
+    <ApartmentsList v-if="!store.isLoading && apartments" :apartments="filteredApartments" :hasDistance="true" />
 </template>
 
 <style scoped lang="scss">
