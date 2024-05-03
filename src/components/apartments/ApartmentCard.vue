@@ -31,6 +31,7 @@ export default {
                 <p class="mb-1">{{ apartment.address }}</p>
                 <p class="mb-1">{{ apartment.price_per_night }} €</p>
                 <p class="mb-1">{{ apartment.square_meters }} m<sup>2</sup></p>
+                <i class="fas fa-arrow-right"></i>
                 <p v-if="hasDistance" class="mb-1">{{ formattedDistance() }}</p>
             </RouterLink>
         </div>
@@ -42,10 +43,56 @@ export default {
     width: 100%;
     border: none;
     margin-top: 50px;
+    box-shadow: 3px 3px 15px rgb(189, 187, 187);
+
 
     .card-body {
-        padding: 0;
-        padding-top: 1rem;
+        display: block;
+        position: relative;
+        height: 170px;
+        background-color: #f2f8f9;
+        text-decoration: none;
+        z-index: 0;
+        overflow: hidden;
+
+        .fa-arrow-right {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            color: white;
+        }
+
+        &:before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: -10px;
+            right: -10px;
+            background: #0E485B;
+            height: 32px;
+            width: 32px;
+            border-radius: 15px;
+            transform: scale(1);
+            transform-origin: 50% 50%;
+            transition: transform 0.25s ease-out;
+        }
+
+        &:hover:before {
+            transform: scale(25);
+            background: linear-gradient(to right, #0E485B, #4BC9E4);
+        }
+    }
+
+    .card-body:hover {
+        p {
+            transition: all 0.3s ease-out;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        h5 {
+            transition: all 0.3s ease-out;
+            color: #ffffff;
+        }
     }
 
     p {
@@ -55,7 +102,7 @@ export default {
     img {
         height: 260px;
         object-fit: cover;
-        border-radius: 5px;
+        border-radius: 5px 5px 0px 0px;
     }
 }
 </style>

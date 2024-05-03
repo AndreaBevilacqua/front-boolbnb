@@ -42,6 +42,10 @@ export default {
         height: 100%;
     }
 
+    .container-fluid {
+        box-shadow: 1px 1px 5px rgb(189, 187, 187);
+    }
+
     a {
         display: flex;
         justify-content: center;
