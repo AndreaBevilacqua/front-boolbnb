@@ -27,10 +27,12 @@ export default {
     width: 100%;
     border: none;
     margin-top: 50px;
+    box-shadow: 3px 3px 15px rgb(189, 187, 187);
 
     .card-body {
         padding: 0;
         padding-top: 1rem;
+        padding: 10px;
     }
 
     p {
@@ -40,7 +42,7 @@ export default {
     img {
         height: 260px;
         object-fit: cover;
-        border-radius: 5px;
+        border-radius: 5px 5px 0px 0px;
     }
 }
 </style>
