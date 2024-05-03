@@ -146,7 +146,7 @@ export default {
                     v-model="searchAddress">
                 <!-- <button @click="searchApartmentsWithAddress(searchAddress)" type="button"
                     class="btn btn-primary rounded-pill p-2">Cerca</button> -->
-                <RouterLink class="btn btn-primary rounded-pill p-2"
+                <RouterLink class="btn my-color rounded-pill p-2"
                     :to="{ name: 'filtered-apartments', query: { address: searchAddress } }">Cerca
                 </RouterLink>
             </form>
@@ -251,7 +251,7 @@ export default {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" @click="resetFilters()">Rimuovi filtri</button>
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
+                        <button type="submit" class="btn my-color" data-bs-dismiss="modal"
                             @click="searchApartmentsWithAddress(searchAddress)">Applica Filtri</button>
                     </div>
                 </div>
@@ -271,15 +271,16 @@ export default {
         border: none;
         outline: none;
     }
-
-    button {
-        width: 7%;
-        font-weight: bold;
-    }
 }
 
 #filters-button {
     background: white;
     border: 0.5px solid gray;
+}
+
+.my-color {
+    background-color: #4BC9E4;
+    color: white;
+    font-weight: bold;
 }
 </style>
