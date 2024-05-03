@@ -125,6 +125,14 @@ export default {
         this.searchApartmentsWithAddress(this.$route.query.address);
         this.fetchServices();
         this.searchAddress = this.$route.query.address;
+    },
+    watch: {
+        '$route'(to, from) {
+            if (to.query.address !== from.query.address) {
+                this.searchApartmentsWithAddress(to.query.address);
+                this.$route.query.address = to.query.address
+            }
+        }
     }
 }
 </script>
@@ -134,10 +142,13 @@ export default {
     <div class="d-flex justify-content-center gap-3">
         <div class="searchbar rounded-pill p-2 shadow-sm container m-0">
             <form @submit.prevent class="d-flex justify-content-between align-items-center">
-                <input @keyup.enter="searchApartmentsWithAddress(searchAddress)" type="search" id="place"
-                    class="ms-3 radius" placeholder="Inserisci un indirizzo" v-model="searchAddress">
-                <button @click="searchApartmentsWithAddress(searchAddress)" type="button"
-                    class="btn btn-primary rounded-pill p-2">Cerca</button>
+                <input type="search" id="place" class="ms-3 radius" placeholder="Inserisci un indirizzo"
+                    v-model="searchAddress">
+                <!-- <button @click="searchApartmentsWithAddress(searchAddress)" type="button"
+                    class="btn btn-primary rounded-pill p-2">Cerca</button> -->
+                <RouterLink class="btn btn-primary rounded-pill p-2"
+                    :to="{ name: 'filtered-apartments', query: { address: searchAddress } }">Cerca
+                </RouterLink>
             </form>
         </div>
 
