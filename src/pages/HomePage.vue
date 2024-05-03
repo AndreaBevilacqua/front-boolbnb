@@ -54,7 +54,7 @@ export default {
             <img src="../assets/homephoto.jpg" alt="homephoto">
         </section>
 
-        <ApartmentsList v-if="!store.isLoading && apartments" :apartments="apartments" />
+        <ApartmentsList v-if="!store.isLoading && apartments" :apartments="apartments" :hasDistance="false" />
     </div>
 
 </template>
