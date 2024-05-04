@@ -1,6 +1,7 @@
 <script>
 import axios from 'axios';
 import ApartmentsList from '../components/apartments/ApartmentsList.vue';
+import TomTomAutocomplete from '../components/searchbar/TomTomAutocomplete.vue';
 import { store } from '../assets/Data/store';
 const endpoint = 'http://localhost:8000/api/apartments/';
 const endpointAddressSearch = 'http://localhost:8000/api/apartments/search';
@@ -9,7 +10,7 @@ const endpointServices = 'http://localhost:8000/api/apartments/services/';
 
 export default {
     name: 'FilteredApartmentPage',
-    components: { ApartmentsList },
+    components: { ApartmentsList, TomTomAutocomplete },
     data: () => ({
         apartments: [],
         services: [],
@@ -19,12 +20,17 @@ export default {
         bedsInput: 0,
         roomsInput: 0,
         kmInput: 20,
-        store
+        store,
+        searchedWithAddress: true,
+        showModal: false
     }),
     props: {
         address: String,
     },
     methods: {
+        setAddress(address) {
+            this.searchAddress = address;
+        },
         setPriceInput() {
             if (!this.priceInput) this.priceInput = 0;
         },
@@ -45,6 +51,8 @@ export default {
             // Se non è stato inserito alcun indirizzo, esegue fetchApartments
             if (!address) {
                 this.fetchApartments();
+                this.searchedWithAddress = false;
+                this.$route.query.distance = '';
             } else {
                 try {
                     const res = await axios.get(endpointAddressSearch, {
@@ -54,6 +62,7 @@ export default {
                         }
                     })
                     this.apartments = res.data;
+                    this.searchedWithAddress = true;
                 } catch (err) {
                     console.error(err);
                 } finally {
@@ -128,11 +137,19 @@ export default {
     },
     watch: {
         '$route'(to, from) {
-            if (to.query.address !== from.query.address) {
+            if (to.query.address !== from.query.address || to.query.distance !== from.query.distance) {
                 this.searchApartmentsWithAddress(to.query.address);
                 this.$route.query.address = to.query.address
+                this.$route.query.distance = to.query.distance;
             }
         }
+        // ,
+        // '$route'(to, from) {
+        //     if (to.query.distance !== from.query.distance) {
+        //         this.searchApartmentsWithAddress(to.query.address);
+        //         this.$route.query.distance = to.query.distance;
+        //     }
+        // }
     }
 }
 </script>
@@ -140,26 +157,26 @@ export default {
 <template>
     <!-- Ricerca di un appartamento -->
     <div class="d-flex justify-content-center gap-3">
-        <div class="searchbar rounded-pill p-2 shadow-sm container m-0">
-            <form @submit.prevent class="d-flex justify-content-between align-items-center">
-                <input type="search" id="place" class="ms-3 radius" placeholder="Inserisci un indirizzo"
-                    v-model="searchAddress">
-                <!-- <button @click="searchApartmentsWithAddress(searchAddress)" type="button"
-                    class="btn btn-primary rounded-pill p-2">Cerca</button> -->
+        <div class="searchbar rounded-pill shadow-sm container m-0 ps-0">
+            <form @submit.prevent class="d-flex justify-content-between align-items-center w-100 h-100">
+                <!-- <input type="search" id="place" class="ms-3 radius" placeholder="Inserisci un indirizzo"
+                    v-model="searchAddress"> -->
+                <TomTomAutocomplete :rounded="true" :showLabel="false" id="place" @selectAddress="setAddress"
+                    @deleteAddress="searchAddress = ''" />
                 <RouterLink class="btn btn-primary rounded-pill p-2"
-                    :to="{ name: 'filtered-apartments', query: { address: searchAddress } }">Cerca
+                    :to="{ name: 'filtered-apartments', query: { address: searchAddress, distance: kmInput } }">Cerca
                 </RouterLink>
             </form>
         </div>
 
         <!-- Bottone per Filtrare -->
         <button id="filters-button" type="button" class="rounded-pill p-3 shadow-sm d-flex align-items-center gap-2"
-            data-bs-toggle="modal" data-bs-target="#exampleModal2" @click="fetchServices">
+            @click="showModal = true">
             <font-awesome-icon icon="fa-solid fa-sort" />Filtri avanzati
         </button>
 
         <!-- Modale per i filtri -->
-        <div class="modal fade" id="exampleModal2" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade show" v-if="showModal" id="filters-modal">
             <div class="modal-dialog modal-dialog-scrollable modal-xl">
                 <div class="modal-content rounded">
                     <div class="modal-header">
@@ -175,7 +192,7 @@ export default {
                                 Distanza / km {{ kmInput }}
                             </label>
                             <div class="range-wrap">
-                                <input type="range" class="form-range" id="km" min="1" max="20" step="1"
+                                <input type="range" class="form-range" id="km" min="1" max="100" step="1"
                                     v-model="kmInput">
                             </div>
                             <div class="d-flex justify-content-between">
@@ -183,7 +200,7 @@ export default {
                                     1 km
                                 </div>
                                 <div>
-                                    20 km
+                                    100 km
                                 </div>
                             </div>
                         </div>
@@ -232,7 +249,7 @@ export default {
                             </div>
                         </div>
 
-                        <!-- Servizi -->
+                        <!-- Filtro Servizi -->
                         <div class="mt-3 mb-2 fs-4">
                             <strong>Servizi</strong>
                         </div>
@@ -251,15 +268,21 @@ export default {
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" @click="resetFilters()">Rimuovi filtri</button>
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal"
-                            @click="searchApartmentsWithAddress(searchAddress)">Applica Filtri</button>
+
+                        <!-- Bottono Applica filtri -->
+                        <RouterLink @click="showModal = false" class="btn btn-primary"
+                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, distance: kmInput } }">
+                            Applica filtri
+                        </RouterLink>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- ---------------------- CHIUSURA MODALE ---------------------- -->
     </div>
     <h1 class="mt-5 mb-3">Appartamenti BoolBnb</h1>
-    <ApartmentsList v-if="!store.isLoading && apartments" :apartments="filteredApartments" :hasDistance="true" />
+    <ApartmentsList v-if="!store.isLoading && apartments" :apartments="filteredApartments"
+        :hasDistance="searchedWithAddress" />
 </template>
 
 <style scoped lang="scss">
@@ -276,6 +299,11 @@ export default {
         width: 7%;
         font-weight: bold;
     }
+}
+
+#filters-modal {
+    display: block;
+    background-color: rgba($color: #000000, $alpha: .5);
 }
 
 #filters-button {

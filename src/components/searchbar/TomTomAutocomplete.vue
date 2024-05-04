@@ -8,6 +8,11 @@ export default {
             results: []
         };
     },
+    props: {
+        showLabel: Boolean,
+        hasBorder: Boolean,
+        rounded: Boolean,
+    },
     methods: {
         search() {
             if (this.searchQuery.length > 3) {
@@ -27,20 +32,24 @@ export default {
             this.searchQuery = result.address.freeformAddress;
             this.$emit('selectAddress', this.searchQuery)
             this.results = []
-
+        },
+        deleteAddress() {
+            this.searchQuery = '';
+            this.$emit('deleteAddress');
         }
     },
-    emits: ['selectAddress']
+    emits: ['selectAddress', 'deleteAddress']
 
 };
 </script>
 
 <template>
-    <div>
-        <label for="search-address">Dove</label>
-        <input autocomplete="off" id="search-address" v-model="searchQuery" @input="search"
-            placeholder="Cerca indirizzo">
-        <ul class="list-group" v-if="results.length">
+    <div style="position: relative;" class="w-100 h-100">
+        <label v-if="showLabel" for="search-address">Dove</label>
+        <input autocomplete="off" id="search-address" v-model="searchQuery" @input="search" @click.left="deleteAddress"
+            placeholder="Cerca indirizzo" class="w-100 h-100 "
+            :class="{ 'border-0': !hasBorder, 'rounded-pill': rounded }">
+        <ul id="advertisement-list" class="list-group" v-if="results.length">
             <li class="list-group-item" v-for="(result, index) in results" :key="index" @click="selectResult(result)">
                 <!-- @click="$emit('selectAddress', result.address.freeformAddress)"> -->
                 {{ result.address.freeformAddress }}
@@ -57,9 +66,15 @@ input {
     width: 100%;
     height: 2.5rem;
     padding-left: 10px;
-    margin-bottom: 1rem;
     border-radius: 5px;
     border: 1px solid rgba(128, 128, 128, 0.3);
+    background-color: transparent;
+}
+
+#advertisement-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
 }
 
 .list-group-item {
