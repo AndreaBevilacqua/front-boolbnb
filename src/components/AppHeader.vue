@@ -58,7 +58,7 @@ export default {
     }
 
     span {
-        display: none;
+
         background: linear-gradient(to right, #0E485B, #4BC9E4);
         -webkit-background-clip: text;
         background-clip: text;

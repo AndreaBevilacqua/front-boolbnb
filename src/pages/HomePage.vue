@@ -51,7 +51,7 @@ export default {
                     </form>
                 </div>
             </div>
-            <img class="d-none" src="../assets/homephoto.jpg" alt="homephoto">
+            <img src="../assets/homephoto.jpg" alt="homephoto">
         </section>
 
         <ApartmentsList v-if="!store.isLoading && apartments" :apartments="apartments" :hasDistance="false" />
@@ -80,6 +80,7 @@ export default {
         box-shadow: 10px 10px 10px gray;
         width: 90%;
         object-fit: cover;
+        display: none;
     }
 
 
@@ -141,9 +142,36 @@ export default {
     }
 }
 
+@media screen and (min-width:768px) {
+    .jumbotron {
+
+        img {
+            display: block;
+        }
+
+        .card {
+            position: absolute;
+            top: 50%;
+            left: 35%;
+            transform: translate(-50%, -50%);
+        }
+    }
+
+}
+
 @media screen and (min-width:992px) {
-    .card {
-        left: 300px;
+    .jumbotron {
+        .card {
+            left: 27%;
+        }
+    }
+}
+
+@media screen and (min-width:1200px) {
+    .jumbotron {
+        .card {
+            left: 20%;
+        }
     }
 }
 </style>

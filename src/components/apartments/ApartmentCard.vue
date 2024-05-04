@@ -78,7 +78,7 @@ export default {
         }
 
         &:hover:before {
-            transform: scale(30);
+            transform: scale(50);
             background: linear-gradient(to right, #0E485B, #4BC9E4);
         }
     }
