@@ -51,7 +51,7 @@ export default {
                     </form>
                 </div>
             </div>
-            <img src="../assets/homephoto.jpg" alt="homephoto">
+            <img class="d-none" src="../assets/homephoto.jpg" alt="homephoto">
         </section>
 
         <ApartmentsList v-if="!store.isLoading && apartments" :apartments="apartments" :hasDistance="false" />
@@ -60,6 +60,14 @@ export default {
 </template>
 
 <style scoped lang="scss">
+.container-fluid {
+    padding: 0px;
+}
+
+.container {
+    padding: 0px;
+}
+
 .jumbotron {
 
     position: relative;
@@ -82,10 +90,14 @@ export default {
         border-radius: 25px;
         box-shadow: 5px 5px 30px gray;
 
-        position: absolute;
-        top: 50%;
-        left: 10%;
-        transform: translate(-50%, -50%);
+        // position: absolute;
+        // top: 50%;
+        // left: 10%;
+        // transform: translate(-50%, -50%);
+        .card-body {
+            padding: 0;
+
+        }
 
         p {
             color: rgba(128, 128, 128, 0.5);
@@ -126,6 +138,12 @@ export default {
                 border: 1px solid rgba(128, 128, 128, 0.3);
             }
         }
+    }
+}
+
+@media screen and (min-width:992px) {
+    .card {
+        left: 300px;
     }
 }
 </style>
