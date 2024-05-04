@@ -49,7 +49,7 @@ export default {
     .card-body {
         display: block;
         position: relative;
-        height: 170px;
+        min-height: 180px;
         background-color: #f2f8f9;
         text-decoration: none;
         z-index: 0;
@@ -78,7 +78,7 @@ export default {
         }
 
         &:hover:before {
-            transform: scale(25);
+            transform: scale(30);
             background: linear-gradient(to right, #0E485B, #4BC9E4);
         }
     }
