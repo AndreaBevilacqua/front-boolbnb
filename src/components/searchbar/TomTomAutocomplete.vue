@@ -5,7 +5,10 @@ export default {
     data() {
         return {
             searchQuery: '',
-            results: []
+            results: [],
+            lat: 0,
+            lon: 0,
+            result: {}
         };
     },
     props: {
@@ -27,10 +30,22 @@ export default {
                 this.results = [];
             }
         },
+        searchCoordinates() {
+            axios.get('https://api.tomtom.com/search/2/search/' + this.searchQuery + '.json?key=JCA7jDznFGPlGy91V9K6LVAp8heuxKMU&limit=4&language=it-IT&countrySet=IT')
+                .then(response => {
+                    this.lat = response.data.results[0].position.lat;
+                    this.lon = response.data.results[0].position.lon;
+                    this.$emit('selectAddress', this.searchQuery, this.lat, this.lon)
+                })
+                .catch(error => {
+                    console.error('Error fetching TomTom results:', error);
+                });
+        },
         selectResult(result) {
             // Fai qualcosa con il risultato selezionato, ad esempio puoi inserirlo nell'input o fare altre operazioni
             this.searchQuery = result.address.freeformAddress;
-            this.$emit('selectAddress', this.searchQuery)
+            this.searchCoordinates();
+            this.$emit('selectAddress', this.searchQuery, this.lat, this.lon)
             this.results = []
         },
         deleteAddress() {
@@ -46,8 +61,8 @@ export default {
 <template>
     <div style="position: relative;" class="w-100 h-100">
         <label v-if="showLabel" for="search-address">Dove</label>
-        <input autocomplete="off" id="search-address" v-model="searchQuery" @input="search" @click.left="deleteAddress"
-            placeholder="Cerca indirizzo" class="w-100 h-100 "
+        <input autocomplete="off" id="search-address" v-model.trim="searchQuery" @input="search"
+            @click.left="deleteAddress" placeholder="Cerca indirizzo" class="w-100 h-100 "
             :class="{ 'border-0': !hasBorder, 'rounded-pill': rounded }">
         <ul id="advertisement-list" class="list-group" v-if="results.length">
             <li class="list-group-item" v-for="(result, index) in results" :key="index" @click="selectResult(result)">

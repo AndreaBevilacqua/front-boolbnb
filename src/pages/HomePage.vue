@@ -11,6 +11,8 @@ export default {
     data: () => ({
         apartments: [],
         searchAddress: '',
+        latitude: 0,
+        longitude: 0,
         store
     }),
     methods: {
@@ -24,8 +26,10 @@ export default {
                 store.isLoading = false;
             })
         },
-        setAddress(address) {
+        setAddress(address, lat, lon) {
             this.searchAddress = address;
+            this.latitude = lat;
+            this.longitude = lon;
         }
 
     },
@@ -46,7 +50,8 @@ export default {
                     <form @submit.prevent>
                         <TomTomAutocomplete :showLabel="true" :hasBorder="true" @selectAddress="setAddress" />
                         <RouterLink class="bnt button"
-                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, distance: 20 } }">Cerca
+                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: 20 } }">
+                            Cerca
                         </RouterLink>
                     </form>
                 </div>

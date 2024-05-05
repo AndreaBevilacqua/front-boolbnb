@@ -16,6 +16,8 @@ export default {
         services: [],
         checkedServices: [],
         searchAddress: '',
+        latitude: 0,
+        longitude: 0,
         priceInput: 0,
         bedsInput: 0,
         roomsInput: 0,
@@ -25,8 +27,10 @@ export default {
         showModal: false
     }),
     methods: {
-        setAddress(address) {
+        setAddress(address, lat, lon) {
             this.searchAddress = address;
+            this.latitude = lat;
+            this.longitude = lon;
         },
         setPriceInput() {
             if (!this.priceInput) this.priceInput = 0;
@@ -55,6 +59,8 @@ export default {
                     const res = await axios.get(endpointAddressSearch, {
                         params: {
                             address,
+                            latitude: this.$route.query.latitude,
+                            longitude: this.$route.query.longitude,
                             distance: this.kmInput
                         }
                     })
@@ -162,7 +168,8 @@ export default {
                 <TomTomAutocomplete :rounded="true" :showLabel="false" id="place" @selectAddress="setAddress"
                     @deleteAddress="searchAddress = ''" />
                 <RouterLink class="btn btn-primary rounded-pill p-2"
-                    :to="{ name: 'filtered-apartments', query: { address: searchAddress, distance: kmInput } }">Cerca
+                    :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput } }">
+                    Cerca
                 </RouterLink>
             </form>
         </div>
@@ -181,7 +188,8 @@ export default {
                         <h1 class="modal-title fs-5" id="exampleModalLabel">
                             Filtri avanzati
                         </h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <!-- Bottone per chiudere la modale -->
+                        <button type="button" class="btn-close" @click="showModal = false"></button>
                     </div>
                     <div class="modal-body p-4">
                         <!-- Range per km -->
@@ -269,7 +277,7 @@ export default {
 
                         <!-- Bottono Applica filtri -->
                         <RouterLink @click="showModal = false" class="btn btn-primary"
-                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, distance: kmInput } }">
+                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput } }">
                             Applica filtri
                         </RouterLink>
                     </div>
