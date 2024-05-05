@@ -16,7 +16,7 @@ export default {
     methods: {
         search() {
             if (this.searchQuery.length > 3) {
-                axios.get('https://api.tomtom.com/search/2/search/' + this.searchQuery + '.json?key=JCA7jDznFGPlGy91V9K6LVAp8heuxKMU&limit=4&language=it-IT')
+                axios.get('https://api.tomtom.com/search/2/search/' + this.searchQuery + '.json?key=JCA7jDznFGPlGy91V9K6LVAp8heuxKMU&limit=4&language=it-IT&countrySet=IT')
                     .then(response => {
                         this.results = response.data.results;
                     })
