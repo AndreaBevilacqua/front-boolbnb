@@ -23,10 +23,14 @@ export default {
         roomsInput: 0,
         kmInput: 20,
         store,
-        searchedWithAddress: true,
         showModal: false
     }),
     methods: {
+        deleteAddress() {
+            this.searchAddress = '';
+            this.latitude = null;
+            this.longitude = null;
+        },
         setAddress(address, lat, lon) {
             this.searchAddress = address;
             this.latitude = lat;
@@ -48,31 +52,29 @@ export default {
         },
         async searchApartmentsWithAddress(address = null) {
             store.isLoading = true
-
-            // Se non è stato inserito alcun indirizzo, esegue fetchApartments
+            // Se non è stato inserito alcun indirizzo
             if (!address) {
-                this.fetchApartments();
-                this.searchedWithAddress = false;
                 this.$route.query.distance = '';
-            } else {
-                try {
-                    const res = await axios.get(endpointAddressSearch, {
-                        params: {
-                            address,
-                            latitude: this.$route.query.latitude,
-                            longitude: this.$route.query.longitude,
-                            distance: this.kmInput
-                        }
-                    })
-                    this.apartments = res.data;
-                    this.searchedWithAddress = true;
-                } catch (err) {
-                    console.error(err);
-                } finally {
-                    store.isLoading = false
-                }
-
             }
+            try {
+                const res = await axios.get(endpointAddressSearch, {
+                    params: {
+                        address,
+                        latitude: this.$route.query.latitude,
+                        longitude: this.$route.query.longitude,
+                        distance: this.kmInput,
+                        services: JSON.stringify(this.checkedServices)
+                    }
+                })
+                this.apartments = res.data;
+                console.log(this.apartments)
+            } catch (err) {
+                console.error(err);
+            } finally {
+                store.isLoading = false
+            }
+
+
         },
         // Funzione per ottenere i servizi
         fetchServices() {
@@ -117,43 +119,29 @@ export default {
                     return apartment.beds == this.bedsInput
                 }
             });
-            newApartments = newApartments.filter((apartment) => {
-                if (this.checkedServices.length === 0)
-                    return true;
-                else {
-                    const serviceIdsInApartment = apartment.services.map(service => service.id)
-                    const allServicesIncluded = this.checkedServices.every(serviceId => serviceIdsInApartment.includes(serviceId))
-                    return allServicesIncluded
-                }
-            });
+
             return newApartments;
-        },
-        // created() {                                                      ANDREAAAAAAAAAAAAA GUARDA DOVE STAVA IL CREATED
-        // this.searchApartmentsWithAddress(this.$route.query.address);
-        // this.fetchServices();
-        // this.searchAddress = this.$route.query.address;
+        }
     },
     created() {
         this.kmInput = this.$route.query.distance;
         this.searchAddress = this.$route.query.address;
+        this.latitude = this.$route.query.latitude;
+        this.longitude = this.$route.query.longitude;
+        this.checkedServices = JSON.parse(this.$route.query.services)
         this.searchApartmentsWithAddress(this.$route.query.address);
         this.fetchServices();
     },
     watch: {
         '$route'(to, from) {
-            if (to.query.address !== from.query.address || to.query.distance !== from.query.distance) {
+            if (to.query.address !== from.query.address || to.query.distance !== from.query.distance || to.query.services !== from.query.services) {
                 this.searchApartmentsWithAddress(to.query.address);
                 this.$route.query.address = to.query.address
                 this.$route.query.distance = to.query.distance;
+                this.$route.query.services = to.query.services;
+
             }
         }
-        // ,
-        // '$route'(to, from) {
-        //     if (to.query.distance !== from.query.distance) {
-        //         this.searchApartmentsWithAddress(to.query.address);
-        //         this.$route.query.distance = to.query.distance;
-        //     }
-        // }
     }
 }
 </script>
@@ -161,14 +149,14 @@ export default {
 <template>
     <!-- Ricerca di un appartamento -->
     <div class="d-flex justify-content-center gap-3">
-        <div class="searchbar rounded-pill shadow-sm container m-0 ps-0">
+        <div id="address-searchbar" class="searchbar rounded-pill shadow-sm container m-0 px-0">
             <form @submit.prevent class="d-flex justify-content-between align-items-center w-100 h-100">
                 <!-- <input type="search" id="place" class="ms-3 radius" placeholder="Inserisci un indirizzo"
                     v-model="searchAddress"> -->
                 <TomTomAutocomplete :rounded="true" :showLabel="false" id="place" @selectAddress="setAddress"
-                    @deleteAddress="searchAddress = ''" />
-                <RouterLink class="btn btn-primary rounded-pill p-2"
-                    :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput } }">
+                    @deleteAddress="deleteAddress" />
+                <RouterLink class="btn btn-primary rounded-end-pill h-100 d-flex align-items-center  px-4"
+                    :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, services: JSON.stringify(checkedServices) } }">
                     Cerca
                 </RouterLink>
             </form>
@@ -277,7 +265,7 @@ export default {
 
                         <!-- Bottono Applica filtri -->
                         <RouterLink @click="showModal = false" class="btn btn-primary"
-                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput } }">
+                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, services: JSON.stringify(checkedServices) } }">
                             Applica filtri
                         </RouterLink>
                     </div>
@@ -287,8 +275,7 @@ export default {
         <!-- ---------------------- CHIUSURA MODALE ---------------------- -->
     </div>
     <h1 class="mt-5 mb-3">Appartamenti BoolBnb</h1>
-    <ApartmentsList v-if="!store.isLoading && apartments" :apartments="filteredApartments"
-        :hasDistance="searchedWithAddress" />
+    <ApartmentsList v-if="!store.isLoading && apartments" :apartments="filteredApartments" />
 </template>
 
 <style scoped lang="scss">

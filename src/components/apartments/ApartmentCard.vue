@@ -3,20 +3,29 @@ import { RouterLink } from 'vue-router';
 
 export default {
     name: 'ApartmentCard',
+    data: () => ({
+        showDistance: false
+    }),
     props: {
         apartment: Object,
-        hasDistance: Boolean
     },
     methods: {
         formattedDistance() {
-            if (this.apartment.distance < 1) {
+            if (0 < this.apartment.distance && this.apartment.distance < 1) {
                 let distance = Math.floor(this.apartment.distance * 1000);
+                this.showDistance = true;
                 return `${distance} m`
-            } else {
+            } else if (this.apartment.distance >= 1) {
                 let distance = this.apartment.distance.toFixed(2);
+                this.showDistance = true;
                 return `${distance} km`
+            } else {
+                this.showDistance = false;
             }
         }
+    },
+    created() {
+        this.formattedDistance()
     }
 }
 </script>
@@ -29,10 +38,12 @@ export default {
                 :to="{ name: 'detail-page', params: { slug: apartment.slug } }">
                 <h5>{{ apartment.title }}</h5>
                 <p class="mb-1">{{ apartment.address }}</p>
-                <p class="mb-1">{{ apartment.price_per_night }} €</p>
-                <p class="mb-1">{{ apartment.square_meters }} m<sup>2</sup></p>
+                <div class="d-flex column-gap-3">
+                    <p class="mb-1">{{ apartment.price_per_night }} €</p>
+                    <p class="mb-1">{{ apartment.square_meters }} m<sup>2</sup></p>
+                    <p v-if="showDistance" class="mb-1">{{ formattedDistance() }}</p>
+                </div>
                 <i class="fas fa-arrow-right"></i>
-                <p v-if="hasDistance" class="mb-1">{{ formattedDistance() }}</p>
             </RouterLink>
         </div>
     </div>

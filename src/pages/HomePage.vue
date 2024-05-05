@@ -50,7 +50,7 @@ export default {
                     <form @submit.prevent>
                         <TomTomAutocomplete :showLabel="true" :hasBorder="true" @selectAddress="setAddress" />
                         <RouterLink class="bnt button"
-                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: 20 } }">
+                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: 20, services: JSON.stringify([]) } }">
                             Cerca
                         </RouterLink>
                     </form>
@@ -59,7 +59,7 @@ export default {
             <img src="../assets/homephoto.jpg" alt="homephoto">
         </section>
 
-        <ApartmentsList v-if="!store.isLoading && apartments" :apartments="apartments" :hasDistance="false" />
+        <ApartmentsList v-if="!store.isLoading && apartments" :apartments="apartments" />
     </div>
 
 </template>
