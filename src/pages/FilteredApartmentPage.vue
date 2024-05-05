@@ -24,9 +24,6 @@ export default {
         searchedWithAddress: true,
         showModal: false
     }),
-    props: {
-        address: String,
-    },
     methods: {
         setAddress(address) {
             this.searchAddress = address;
@@ -131,9 +128,10 @@ export default {
         // this.searchAddress = this.$route.query.address;
     },
     created() {
+        this.kmInput = this.$route.query.distance;
+        this.searchAddress = this.$route.query.address;
         this.searchApartmentsWithAddress(this.$route.query.address);
         this.fetchServices();
-        this.searchAddress = this.$route.query.address;
     },
     watch: {
         '$route'(to, from) {
