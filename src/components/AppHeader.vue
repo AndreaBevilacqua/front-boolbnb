@@ -7,7 +7,7 @@ export default {
 </script>
 
 <template>
-    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm py-0 sticky-top">
+    <nav class="navbar navbar-expand navbar-light bg-white shadow-sm py-0 sticky-top">
         <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
@@ -58,6 +58,7 @@ export default {
     }
 
     span {
+
         background: linear-gradient(to right, #0E485B, #4BC9E4);
         -webkit-background-clip: text;
         background-clip: text;

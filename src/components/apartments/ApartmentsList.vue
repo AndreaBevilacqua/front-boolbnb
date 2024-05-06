@@ -11,11 +11,12 @@ export default {
 </script>
 
 <template>
-    <div v-if="apartments.length" class="row row-cols-5">
-        <ApartmentCard v-for="apartment in apartments" :key="apartment.id" :apartment="apartment"
-            :hasDistance="hasDistance" />
+    <div class="row">
+        <div v-for="apartment in apartments" v-if="apartments.length" class="col-12 col-md-6 col-lg-3">
+            <ApartmentCard :key="apartment.id" :apartment="apartment" :hasDistance="hasDistance" />
+        </div>
+        <h2 v-else class="text-center mt-5 ">Nessun appartamento è stato trovato</h2>
     </div>
-    <h2 v-else class="text-center mt-5 ">Nessun appartamento è stato trovato</h2>
 </template>
 
 <style></style>
