@@ -188,7 +188,6 @@ export default {
             <font-awesome-icon icon="fa-solid fa-sort" />Filtri avanzati
         </button>
 
-        <!-- Modale per i filtri -->
         <div class="modal fade show" v-if="showModal" id="filters-modal">
             <div class="modal-dialog modal-dialog-scrollable modal-xl">
                 <div class="modal-content rounded">
@@ -236,6 +235,7 @@ export default {
                                 Il prezzo deve essere un numero valido, compreso tra 10 e 9999.99.
                             </p>
                         </div>
+
                         <div class="row">
                             <!-- Numero di stanze -->
                             <div class="col-6">
@@ -273,47 +273,53 @@ export default {
                                 <p v-if="bedsError" class="text-danger">Il numero di letti deve essere un numero valido,
                                     compreso tra 1 e 50</p>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Filtro Servizi -->
-                    <div class="mt-3 mb-2 fs-4">
-                        <strong>Servizi</strong>
-                    </div>
-                    <div class="row row-cols-1">
-                        <div class="form-check p-0">
-                            <div class="mb-1" v-for="service in services" :key="service.id">
-                                <input class="form-check-input ms-2" type="checkbox" :id="`service-${service.id}`"
-                                    v-model="checkedServices" :value="service.id" @change="validateServices">
-                                <label class="form-check-label ms-2" :for="`service-${service.id}`">
-                                    {{ service.label }}
-                                </label>
+
+                        </div>
+                        <div class="mt-3 mb-2 fs-4">
+                            <strong>Servizi</strong>
+                        </div>
+                        <div class="row row-cols-1">
+                            <div class="form-check p-0">
+                                <div class="mb-1" v-for="service in services" :key="service.id">
+                                    <input class="form-check-input ms-2" type="checkbox" :id="`service-${service.id}`"
+                                        v-model="checkedServices" :value="service.id" @change="validateServices">
+                                    <label class="form-check-label ms-2" :for="`service-${service.id}`">
+                                        {{ service.label }}
+                                    </label>
+                                </div>
                             </div>
+                            <!-- Messaggio di errore -->
+                            <p v-if="serviceError" class="text-danger">Il servizio selezionato non esiste o non è
+                                presente
+                                nel nostro sistema
+                            </p>
                         </div>
-                        <!-- Messaggio di errore -->
-                        <p v-if="serviceError" class="text-danger">Il servizio selezionato non esiste o non è presente
-                            nel nostro sistema
-                        </p>
                     </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" @click="resetFilters()">Rimuovi filtri</button>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" @click="resetFilters()">Rimuovi filtri</button>
+                        <!-- Bottono Applica filtri -->
+                        <div v-if="!distanceError && !priceError && !roomsError && !bedsError && !serviceError">
+                            <RouterLink @click="showModal = false" class="btn btn-primary"
+                                :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
+                                Applica filtri
+                            </RouterLink>
+                        </div>
+                        <div v-else>
+                            <button class="btn btn-primary" disabled>Applica filtri</button>
+                        </div>
 
-                    <!-- Bottono Applica filtri -->
-                    <div v-if="!distanceError && !priceError && !roomsError && !bedsError && !serviceError">
-                        <RouterLink @click="showModal = false" class="btn btn-primary"
-                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
-                            Applica filtri
-                        </RouterLink>
-                    </div>
-                    <div v-else>
-                        <button class="btn btn-primary" disabled>Applica filtri</button>
+
+
                     </div>
                 </div>
             </div>
+
+
         </div>
     </div>
+
     <!-- ---------------------- CHIUSURA MODALE ---------------------- -->
     <h1 class="mt-5 mb-3">Appartamenti BoolBnb</h1>
     <ApartmentsList v-if="!store.isLoading && apartments" :apartments="apartments" />
