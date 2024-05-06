@@ -8,13 +8,18 @@ export default {
             results: [],
             lat: 0,
             lon: 0,
-            result: {}
+            result: {},
         };
     },
     props: {
-        showLabel: Boolean,
         hasBorder: Boolean,
         rounded: Boolean,
+        fullWidth: Boolean
+    },
+    computed: {
+        showTips() {
+            return this.results.length > 0
+        }
     },
     methods: {
         search() {
@@ -50,6 +55,7 @@ export default {
         },
         deleteAddress() {
             this.searchQuery = '';
+            this.results = [];
             this.lat = null
             this.lon = null
             this.$emit('deleteAddress');
@@ -61,10 +67,11 @@ export default {
 </script>
 
 <template>
-    <div style="position: relative;" class="w-100 h-100">
-        <label v-if="showLabel" for="search-address">Dove</label>
+    <div style="position: relative;" class="h-100 flex-grow-1 ">
+        <small id="tips" v-if="showTips" class="d-block">Seleziona uno dei suggerimenti <span
+                class="text-danger">*</span></small>
         <input autocomplete="off" id="search-address" v-model.trim="searchQuery" @input="search"
-            @click.left="deleteAddress" placeholder="Cerca indirizzo" class="w-100 h-100 "
+            @click.left="deleteAddress" placeholder="Scrivi indirizzo" class="w-100 h-100 "
             :class="{ 'border-0': !hasBorder, 'rounded-start-pill': rounded }">
         <ul id="advertisement-list" class="list-group" v-if="results.length">
             <li class="list-group-item" v-for="(result, index) in results" :key="index" @click="selectResult(result)">
@@ -78,11 +85,18 @@ export default {
 
 
 <style scoped lang="scss">
+#tips {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+}
+
+
 input {
     display: block;
     width: 100%;
-    height: 2.5rem;
-    padding-left: 20px;
+    // height: 2.5rem;
+    padding: 10px 20px;
     border-radius: 5px;
     border: 1px solid rgba(128, 128, 128, 0.3);
     background-color: transparent;

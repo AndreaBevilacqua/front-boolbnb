@@ -129,12 +129,13 @@ export default {
     <!-- Ricerca di un appartamento -->
     <div class="d-flex justify-content-center gap-3">
         <div id="address-searchbar" class="searchbar rounded-pill shadow-sm container m-0 px-0">
-            <form @submit.prevent class="d-flex justify-content-between align-items-center w-100 h-100">
-                <TomTomAutocomplete :rounded="true" :showLabel="false" id="place" @selectAddress="setAddress"
+            <form @submit.prevent class="d-flex align-items-center w-100 h-100">
+                <TomTomAutocomplete :fullWidth="true" :rounded="true" id="place" @selectAddress="setAddress"
                     @deleteAddress="deleteAddress" />
-                <RouterLink class="btn btn-primary rounded-end-pill h-100 d-flex align-items-center  px-4"
+                <RouterLink style="width: fit-content;"
+                    class="btn btn-primary rounded-end-pill h-100 d-flex align-items-center justify-content-center px-4 flex-shrink-0 "
                     :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
-                    Cerca
+                    {{ searchAddress ? 'Cerca: ' + searchAddress : 'Cerca su tutto il territorio' }}
                 </RouterLink>
             </form>
         </div>
