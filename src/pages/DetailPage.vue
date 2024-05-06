@@ -4,6 +4,9 @@ import axios from 'axios';
 const endpoint = 'http://localhost:8000/api/apartments/';
 const messageEndpoint = 'http://localhost:8000/api/contact-message/';
 
+// Endpoint per le visualizzazioni
+const viewsEndpoint = 'http://localhost:8000/api/apartments/views/';
+
 export default {
     name: 'DetailPage',
     data() {
@@ -27,6 +30,7 @@ export default {
                 const res = await axios.get(endpoint + this.$route.params.slug);
                 this.apartment = res.data;
                 this.loadCarouselImages();
+                this.sendView();
             } catch (err) {
                 console.error(err);
                 this.$router.push({ name: 'not-found' });
@@ -67,7 +71,7 @@ export default {
             }
         },
         validateForm() {
-            this.formErrors = {}; required
+            this.formErrors = {};
 
             const namePattern = /^[A-Za-z\s]+$/; // Regex per accettare solo lettere e spazi
             if (!this.formData.name.trim()) {
@@ -118,6 +122,16 @@ export default {
             const alert = document.querySelector('.alert');
             if (alert) {
                 alert.remove();
+            }
+        },
+        async sendView() {
+            try {
+                const res = await axios.post(viewsEndpoint, {
+                    apartment_id: this.apartment.id
+                });
+                console.log(res.data.indirizzoIP);
+            } catch (error) {
+                console.error('Errore durante il recupero dell\'indirizzo IP:', error);
             }
         }
     },
@@ -257,7 +271,7 @@ export default {
                 <div class="services">
                     <ul class="apartment-services">
                         <h4 class="mb-4">Servizi disponibili</h4>
-                        <li v-for="  service in apartment.services" class="mb-3">
+                        <li v-for="service in apartment.services" class="mb-3">
                             <img :src="service.icon" :alt="service.label" class="mx-3">
                             {{ service.label }}
                         </li>
