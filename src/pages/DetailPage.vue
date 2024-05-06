@@ -36,6 +36,21 @@ export default {
                 this.$router.push({ name: 'not-found' });
             }
         },
+
+        async initializeMap() {
+            // Inizializza la mappa con le coordinate dell'appartamento
+            var map = tt.map({
+                key: 'AWAhF6IT1ChO0k28GMmsIysmnTgt0Gpp',
+                container: 'map-container', // Utilizza l'ID del container della mappa
+                center: [this.apartment.longitude, this.apartment.latitude], // Utilizza le coordinate dell'appartamento
+                zoom: 15 // Livello di zoom della mappa
+            });
+
+            // Aggiungi un marker per le coordinate dell'appartamento
+            var marker = new tt.Marker()
+                .setLngLat([this.apartment.longitude, this.apartment.latitude])
+                .addTo(map);
+        },
         loadCarouselImages() {
             this.carouselImages.push(this.apartment.image);
             for (let image of this.apartment.images) {
@@ -129,14 +144,19 @@ export default {
                 const res = await axios.post(viewsEndpoint, {
                     apartment_id: this.apartment.id
                 });
-                console.log(res.data.indirizzoIP);
             } catch (error) {
                 console.error('Errore durante il recupero dell\'indirizzo IP:', error);
             }
         }
     },
-    created() {
-        this.getApartment();
+    mounted() {
+        this.getApartment().then(() => {
+            if (this.apartment) {
+                this.$nextTick(() => {
+                    this.initializeMap();
+                });
+            }
+        });
     }
 }
 </script>
@@ -315,9 +335,10 @@ export default {
         </div>
         <div class="divider my-5"></div>
         <h3 class="mb-4">Dove sarai</h3>
-        <div class="map">
-
+        <div id="map-container" class="map-container rounded-4">
+            <div id="map" class="map"></div>
         </div>
+
     </div>
 
 </template>
@@ -474,6 +495,7 @@ i {
 
 .map {
     height: 500px;
+    width: 100%;
     background-color: beige;
 }
 
