@@ -63,6 +63,9 @@ export default {
                         latitude: this.$route.query.latitude,
                         longitude: this.$route.query.longitude,
                         distance: this.kmInput,
+                        price: this.priceInput,
+                        rooms: this.roomsInput,
+                        beds: this.bedsInput,
                         services: JSON.stringify(this.checkedServices)
                     }
                 })
@@ -93,51 +96,27 @@ export default {
             this.checkedServices = [];
         }
     },
-    computed: {
-        filteredApartments() {
-            let newApartments = this.apartments.filter((apartment) => {
-                if (this.roomsInput === 0)
-                    return true;
-                else if (this.roomsInput === 8) {
-                    return apartment.rooms >= this.roomsInput;
-                } else {
-                    return apartment.rooms == this.roomsInput;
-                }
-            });
-            newApartments = newApartments.filter((apartment) => {
-                if (this.priceInput === 0)
-                    return true;
-                else
-                    return apartment.price_per_night <= this.priceInput;
-            });
-            newApartments = newApartments.filter((apartment) => {
-                if (this.bedsInput === 0)
-                    return true;
-                else if (this.bedsInput === 8) {
-                    return apartment.beds >= this.bedsInput;
-                } else {
-                    return apartment.beds == this.bedsInput
-                }
-            });
-
-            return newApartments;
-        }
-    },
     created() {
-        this.kmInput = this.$route.query.distance;
-        this.searchAddress = this.$route.query.address;
-        this.latitude = this.$route.query.latitude;
-        this.longitude = this.$route.query.longitude;
-        this.checkedServices = JSON.parse(this.$route.query.services)
+        this.kmInput = this.$route.query.distance;      ///////      
+        this.searchAddress = this.$route.query.address;     ///////
+        this.latitude = this.$route.query.latitude;     ///////
+        this.longitude = this.$route.query.longitude;       ///////     Inizializzo i data con quello che mi arriva in query string
+        this.priceInput = this.$route.query.price;      ///////
+        this.roomsInput = this.$route.query.rooms;      ///////
+        this.bedsInput = this.$route.query.beds;      ///////
+        this.checkedServices = JSON.parse(this.$route.query.services);  // Arriva come stringa e lo riconverto in array con JSON.parse()
         this.searchApartmentsWithAddress(this.$route.query.address);
         this.fetchServices();
     },
-    watch: {
+    watch: {        // Al cambiamento di uno dei parametri in query string rifaccio la ricerca degli appartamenti
         '$route'(to, from) {
-            if (to.query.address !== from.query.address || to.query.distance !== from.query.distance || to.query.services !== from.query.services) {
+            if (to.query.address !== from.query.address || to.query.distance !== from.query.distance || to.query.services !== from.query.services || to.query.price !== from.query.price || to.query.rooms !== from.query.rooms || to.query.beds !== from.query.beds) {
                 this.searchApartmentsWithAddress(to.query.address);
-                this.$route.query.address = to.query.address
+                this.$route.query.address = to.query.address;
                 this.$route.query.distance = to.query.distance;
+                this.$route.query.price = to.query.price;
+                this.$route.query.rooms = to.query.rooms;
+                this.$route.query.beds = to.query.beds;
                 this.$route.query.services = to.query.services;
 
             }
@@ -151,12 +130,10 @@ export default {
     <div class="d-flex justify-content-center gap-3">
         <div id="address-searchbar" class="searchbar rounded-pill shadow-sm container m-0 px-0">
             <form @submit.prevent class="d-flex justify-content-between align-items-center w-100 h-100">
-                <!-- <input type="search" id="place" class="ms-3 radius" placeholder="Inserisci un indirizzo"
-                    v-model="searchAddress"> -->
                 <TomTomAutocomplete :rounded="true" :showLabel="false" id="place" @selectAddress="setAddress"
                     @deleteAddress="deleteAddress" />
                 <RouterLink class="btn btn-primary rounded-end-pill h-100 d-flex align-items-center  px-4"
-                    :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, services: JSON.stringify(checkedServices) } }">
+                    :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
                     Cerca
                 </RouterLink>
             </form>
@@ -265,7 +242,7 @@ export default {
 
                         <!-- Bottono Applica filtri -->
                         <RouterLink @click="showModal = false" class="btn btn-primary"
-                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, services: JSON.stringify(checkedServices) } }">
+                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
                             Applica filtri
                         </RouterLink>
                     </div>
@@ -275,7 +252,7 @@ export default {
         <!-- ---------------------- CHIUSURA MODALE ---------------------- -->
     </div>
     <h1 class="mt-5 mb-3">Appartamenti BoolBnb</h1>
-    <ApartmentsList v-if="!store.isLoading && apartments" :apartments="filteredApartments" />
+    <ApartmentsList v-if="!store.isLoading && apartments" :apartments="apartments" />
 </template>
 
 <style scoped lang="scss">

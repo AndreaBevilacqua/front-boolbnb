@@ -10,6 +10,7 @@ export default {
     components: { ApartmentsList, TomTomAutocomplete },
     data: () => ({
         apartments: [],
+        sponsoredApartments: [],
         searchAddress: '',
         latitude: 0,
         longitude: 0,
@@ -19,7 +20,8 @@ export default {
         fetchApartments() {
             store.isLoading = true
             axios.get(endpoint).then(res => {
-                this.apartments = res.data
+                this.apartments = res.data.all
+                this.sponsoredApartments = res.data.sponsored
             }).catch(err => {
                 console.error(err)
             }).then(() => {
@@ -50,7 +52,7 @@ export default {
                     <form @submit.prevent>
                         <TomTomAutocomplete :showLabel="true" :hasBorder="true" @selectAddress="setAddress" />
                         <RouterLink class="bnt button"
-                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: 20, services: JSON.stringify([]) } }">
+                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: 20, price: 0, rooms: 0, beds: 0, services: JSON.stringify([]) } }">
                             Cerca
                         </RouterLink>
                     </form>
