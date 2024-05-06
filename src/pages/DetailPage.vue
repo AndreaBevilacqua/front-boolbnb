@@ -1,5 +1,6 @@
 <script>
 import axios from 'axios';
+import { store } from '../assets/Data/store';
 
 const endpoint = 'http://localhost:8000/api/apartments/';
 const messageEndpoint = 'http://localhost:8000/api/contact-message/';
@@ -21,7 +22,8 @@ export default {
                 subject: '',
                 text: ''
             },
-            formErrors: {}
+            formErrors: {},
+            isLoading: store.isLoading
         };
     },
     methods: {
@@ -69,19 +71,29 @@ export default {
         },
         sendMessage() {
             if (this.validateForm()) {
+                // Imposta isLoading su true solo prima di inviare effettivamente il messaggio
+                store.isLoading = true;
+
                 axios.post(`${messageEndpoint}${this.apartment.id}`, this.formData)
                     .then(response => {
+                        // Gestisci la risposta del server
                         this.showAlert('Messaggio inviato con successo!', 'success');
                         setTimeout(() => {
                             this.closeAlert();
                         }, 5000);
                         this.formData = {};
+
+                        // Imposta isLoading su false solo in caso di successo
+                        store.isLoading = false;
                     })
                     .catch(error => {
+                        // Gestisci gli errori di invio del messaggio
                         this.showAlert('Errore durante l\'invio del messaggio. Si prega di riprovare.', 'danger');
                         setTimeout(() => {
                             this.closeAlert();
                         }, 5000);
+
+
                     });
             }
         },
@@ -302,6 +314,7 @@ export default {
                 <div class="card p-4">
                     <div class="card-body">
                         <h4 class="card-title text-center mb-3">Vuoi saperne di piú?</h4>
+
                         <form @submit.prevent="sendMessage">
                             <label for="name" class="mb-2">Nome</label>
                             <input v-model="formData.name" type="text" placeholder="Mario" class="mb-3" required>
