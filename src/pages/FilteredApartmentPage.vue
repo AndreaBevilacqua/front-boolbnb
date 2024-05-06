@@ -301,7 +301,7 @@ export default {
                     <button type="button" class="btn btn-secondary" @click="resetFilters()">Rimuovi filtri</button>
 
                     <!-- Bottono Applica filtri -->
-                    <div v-if="!distanceError && !priceError && !roomsError && !bedsError">
+                    <div v-if="!distanceError && !priceError && !roomsError && !bedsError && !serviceError">
                         <RouterLink @click="showModal = false" class="btn btn-primary"
                             :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
                             Applica filtri
