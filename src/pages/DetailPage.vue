@@ -292,8 +292,8 @@ export default {
                     <ul class="apartment-services">
                         <h4 class="mb-4">Servizi disponibili</h4>
                         <li v-for="service in apartment.services" class="mb-3">
-                            <img :src="service.icon" :alt="service.label" class="mx-3">
-                            {{ service.label }}
+                            <span class="services-icon"> <i :class="service.icon"></i></span>
+                            <span> {{ service.label }}</span>
                         </li>
                     </ul>
                 </div>
@@ -347,6 +347,11 @@ export default {
 i {
     color: #4BC9E4;
     cursor: pointer;
+}
+
+.services-icon {
+    padding-right: 1rem;
+    font-size: 1.5rem;
 }
 
 .error {
