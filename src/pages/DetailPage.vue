@@ -167,7 +167,7 @@ export default {
                             </figure>
                         </div>
                         <div class="col-6">
-                            <div class="row blocks">
+                            <div class="row">
                                 <div class="col-6">
 
                                 </div>
