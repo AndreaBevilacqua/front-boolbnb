@@ -63,6 +63,7 @@ export default {
                         latitude: this.$route.query.latitude,
                         longitude: this.$route.query.longitude,
                         distance: this.kmInput,
+                        price: this.priceInput,
                         services: JSON.stringify(this.checkedServices)
                     }
                 })
@@ -105,12 +106,6 @@ export default {
                 }
             });
             newApartments = newApartments.filter((apartment) => {
-                if (this.priceInput === 0)
-                    return true;
-                else
-                    return apartment.price_per_night <= this.priceInput;
-            });
-            newApartments = newApartments.filter((apartment) => {
                 if (this.bedsInput === 0)
                     return true;
                 else if (this.bedsInput === 8) {
@@ -128,16 +123,18 @@ export default {
         this.searchAddress = this.$route.query.address;
         this.latitude = this.$route.query.latitude;
         this.longitude = this.$route.query.longitude;
+        this.priceInput = this.$route.query.price;
         this.checkedServices = JSON.parse(this.$route.query.services)
         this.searchApartmentsWithAddress(this.$route.query.address);
         this.fetchServices();
     },
     watch: {
         '$route'(to, from) {
-            if (to.query.address !== from.query.address || to.query.distance !== from.query.distance || to.query.services !== from.query.services) {
+            if (to.query.address !== from.query.address || to.query.distance !== from.query.distance || to.query.services !== from.query.services || to.query.price !== from.query.price) {
                 this.searchApartmentsWithAddress(to.query.address);
-                this.$route.query.address = to.query.address
+                this.$route.query.address = to.query.address;
                 this.$route.query.distance = to.query.distance;
+                this.$route.query.price = to.query.price;
                 this.$route.query.services = to.query.services;
 
             }
@@ -156,7 +153,7 @@ export default {
                 <TomTomAutocomplete :rounded="true" :showLabel="false" id="place" @selectAddress="setAddress"
                     @deleteAddress="deleteAddress" />
                 <RouterLink class="btn btn-primary rounded-end-pill h-100 d-flex align-items-center  px-4"
-                    :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, services: JSON.stringify(checkedServices) } }">
+                    :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, services: JSON.stringify(checkedServices) } }">
                     Cerca
                 </RouterLink>
             </form>
@@ -265,7 +262,7 @@ export default {
 
                         <!-- Bottono Applica filtri -->
                         <RouterLink @click="showModal = false" class="btn btn-primary"
-                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, services: JSON.stringify(checkedServices) } }">
+                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, services: JSON.stringify(checkedServices) } }">
                             Applica filtri
                         </RouterLink>
                     </div>

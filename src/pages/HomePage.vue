@@ -50,7 +50,7 @@ export default {
                     <form @submit.prevent>
                         <TomTomAutocomplete :showLabel="true" :hasBorder="true" @selectAddress="setAddress" />
                         <RouterLink class="bnt button"
-                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: 20, services: JSON.stringify([]) } }">
+                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: 20, price: 0, services: JSON.stringify([]) } }">
                             Cerca
                         </RouterLink>
                     </form>
