@@ -48,9 +48,11 @@ export default {
             <div class="card p-4">
                 <div class="card-body">
                     <h3 class="card-title">Trova alloggi su Boolbnb</h3>
-                    <p class="">Alloggi e stanze per ogni tipo di esigenza</p>
+                    <p class="mb-4">Alloggi e stanze per ogni tipo di esigenza</p>
                     <form @submit.prevent>
-                        <TomTomAutocomplete :showLabel="true" :hasBorder="true" @selectAddress="setAddress" />
+                        <div style="">
+                            <TomTomAutocomplete :hasBorder="true" :fullWidth="true" @selectAddress="setAddress" />
+                        </div>
                         <RouterLink class="bnt button"
                             :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: 20, price: 0, rooms: 0, beds: 0, services: JSON.stringify([]) } }">
                             Cerca
@@ -131,21 +133,21 @@ export default {
 
         }
 
-        form {
-            label {
-                font-size: 1.1rem;
-            }
+        // form {
+        //     label {
+        //         font-size: 1.1rem;
+        //     }
 
-            input {
-                display: block;
-                width: 100%;
-                height: 2.5rem;
-                padding-left: 10px;
-                margin-bottom: 1rem;
-                border-radius: 5px;
-                border: 1px solid rgba(128, 128, 128, 0.3);
-            }
-        }
+        //     //input {
+        //     //    display: block;
+        //     //    width: 100%;
+        //     //    height: 2.5rem;
+        //     //    padding-left: 10px;
+        //     //    margin-bottom: 1rem;
+        //     //    border-radius: 5px;
+        //     //    border: 1px solid rgba(128, 128, 128, 0.3);
+        //     //}
+        // }
     }
 }
 
