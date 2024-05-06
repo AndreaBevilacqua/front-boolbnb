@@ -287,11 +287,6 @@ export default {
         border: none;
         outline: none;
     }
-
-    button {
-        width: 7%;
-        font-weight: bold;
-    }
 }
 
 #filters-modal {
@@ -302,5 +297,11 @@ export default {
 #filters-button {
     background: white;
     border: 0.5px solid gray;
+}
+
+.my-color {
+    background-color: #4BC9E4;
+    color: white;
+    font-weight: bold;
 }
 </style>

@@ -142,52 +142,137 @@ export default {
 </script>
 
 <template>
-    <div class="container" v-if="apartment">
-        <h4>{{ apartment.title }}</h4>
-        <span>{{ apartment.address }}.</span>
+    <div class="container-fluid px-5" v-if="apartment">
+        <h1 class="mb-3">{{ apartment.title }}</h1>
+        <span> <i class="fa-solid fa-location-dot me-2"></i>{{ apartment.address }}.</span>
         <!-- carosello  -->
-        <div class="carousel">
+        <!-- <div class="carousel"> -->
 
-            <!-- prev button -->
-            <i class="fas fa-arrow-left" @click="goToPrev"></i>
+        <!-- prev button -->
+        <!-- <i class="fas fa-arrow-left" @click="goToPrev"></i> -->
 
-            <div class="gallery">
-                <!-- immagine principale-->
-                <figure v-for="(image, i) in carouselImages" v-show="currentIndex === i">
+        <!-- <div class="gallery">  -->
+        <!-- immagine principale-->
+        <!-- <figure v-for="(image, i) in carouselImages" v-show="currentIndex === i">
                     <img class="primary-img" :src="image" :alt="apartment.title">
                 </figure>
-            </div>
+            </div> -->
 
-            <!-- next button -->
-            <i class="fas fa-arrow-right" @click="goToNext"></i>
+        <!-- next button -->
+        <!-- <i class="fas fa-arrow-right" @click="goToNext"></i> -->
 
-        </div>
+        <!-- </div> -->
         <!-- thumbnails -->
-        <div id="thumbnails">
+        <!-- <div id="thumbnails">
             <img @click="currentIndex = i" v-for="(image, i) in carouselImages" :src="image" :alt="apartment.title"
                 :class="{ active: i === currentIndex }">
+        </div> -->
+        <div class="images">
+            <div class="row align-items-center">
+                <!-- prev button -->
+                <div class="col-auto">
+                    <i class="fas fa-chevron-left fa-xl" @click="goToPrev" style="color: #0E485B;"></i>
+                </div>
+                <div class="col">
+                    <div class="row">
+                        <div class="col-6">
+                            <figure v-for="(image, i) in carouselImages" v-show="currentIndex === i">
+                                <img class="primary-img" :src="image" :alt="apartment.title">
+                            </figure>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-6">
+
+                                </div>
+                                <div class="col-6">
+
+                                </div>
+                                <div class="col-12">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- next button -->
+                <div class="col-auto">
+                    <i class="fas fa-chevron-right fa-xl" @click="goToNext" style="color: #0E485B;"></i>
+                </div>
+            </div>
         </div>
+
         <div class="row">
             <div class="col-8">
 
-                <span class="name-user">Proprietario: {{ apartment.user.name }}</span>
+                <h1>Host: {{ apartment.user.name }}</h1>
                 <ul class="apartment-info">
-                    <li>Camere: {{ apartment.rooms }}</li>
-                    <li>Letti: {{ apartment.beds }}</li>
-                    <li>Bagni: {{ apartment.bathrooms }}</li>
+                    <li>Camere: {{ apartment.rooms }} -</li>
+                    <li>Letti: {{ apartment.beds }} -</li>
+                    <li>Bagni: {{ apartment.bathrooms }} </li>
                 </ul>
                 <div class="divider"></div>
+                <div class="d-flex">
+                    <div>
+                        <i class="fa-solid fa-suitcase fa-xl"></i>
+                    </div>
+                    <div class="px-3">
+                        <h5>Servizio di custodia bagagli</h5>
+                        <p>
+                            Opzione per gli ospiti di depositare i bagagli in modo sicuro prima del check-in o dopo
+                            il
+                            check-out, per massimizzare la comodità durante il viaggio.
+                        </p>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div>
+                        <i class="fa-solid fa-shield fa-xl"></i>
+                    </div>
+                    <div class="px-3">
+                        <h5>Alloggio e sicurezza</h5>
+                        <p>
+                            Telecamere di sorveglianza esterne presenti nella proprietà -
+                            Allarme antincendio installato -
+                            Rilevatore di monossido di carbonio installato
+                        </p>
+                    </div>
+                </div>
+                <div class="d-flex">
+                    <div>
+                        <i class="fa-solid fa-clock fa-xl"></i>
+                    </div>
+                    <div class="px-3">
+                        <h5>Ottima esperienza di check-in</h5>
+                        <p>
+                            Check-in dopo le ore 15:00 - Check-out entro le ore 10:00
+                        </p>
+                    </div>
+                </div>
+
+                <div class="divider mt-4"></div>
+
                 <div class="description">
-                    <h5>Descrizione</h5>
+                    <h4>Descrizione</h4>
                     <p>{{ apartment.description }}</p>
                 </div>
                 <div class="divider"></div>
+                <h4>Info Utili</h4>
+                <p>
+                    Se sei tra le persone selezionate e deciderai di prenotare, avrai 24 ore di tempo per farlo. Le
+                    spese di
+                    viaggio non sono incluse. Consulta le Regole ufficiali, che includono i requisiti relativi a età
+                    e
+                    provenienza geografica, le modalità di utilizzo dei dati, le probabilità di superare la
+                    selezione e
+                    altri termini.
+                </p>
+                <div class="divider"></div>
                 <div class="services">
-
                     <ul class="apartment-services">
-                        <h5>Servizi</h5>
-                        <li v-for="  service in apartment.services  ">
-                            <img :src="service.icon" :alt="service.label">
+                        <h4 class="mb-4">Servizi disponibili</h4>
+                        <li v-for="service in apartment.services" class="mb-3">
+                            <img :src="service.icon" :alt="service.label" class="mx-3">
                             {{ service.label }}
                         </li>
                     </ul>
@@ -196,60 +281,61 @@ export default {
             <div class="col-4">
                 <div class="card p-4">
                     <div class="card-body">
-                        <h3 class="card-title">Contatta il Proprietario</h3>
-                        <p class="">Invia una mail senza doverti iscrivere!</p>
+                        <h4 class="card-title text-center mb-3">Vuoi saperne di piú?</h4>
                         <form @submit.prevent="sendMessage">
-                            <label for="name">Nome</label>
-                            <input v-model="formData.name" type="text" placeholder="Mario">
+                            <label for="name" class="mb-2">Nome</label>
+                            <input v-model="formData.name" type="text" placeholder="Mario" class="mb-3" required>
                             <div v-if="formErrors.name" class="error"><small>{{ formErrors.name }}</small></div>
 
-                            <label for="last_name">Cognome</label>
-                            <input v-model="formData.last_name" type="text" placeholder="Rossi">
+                            <label for="last_name" class="mb-2">Cognome</label>
+                            <input v-model="formData.last_name" type="text" placeholder="Rossi" class="mb-3" required>
                             <div v-if="formErrors.last_name" class="error"><small>{{ formErrors.last_name }}</small>
                             </div>
 
-                            <label for="email">E-mail</label>
-                            <input v-model="formData.email" type="email" placeholder="mariorossi@example.com">
+                            <label for="email" class="mb-2">E-mail</label>
+                            <input v-model="formData.email" type="email" placeholder="mariorossi@example.com"
+                                class="mb-3" required>
                             <div v-if="formErrors.email" class="error"><small>{{ formErrors.email }}</small></div>
 
-                            <label for="subject">Oggetto</label>
-                            <input v-model="formData.subject" class="object" type="text">
-                            <div v-if="formErrors.subject" class="error"><small>{{ formErrors.subject }}</small></div>
+                            <label for="subject" class="mb-2">Oggetto</label>
+                            <input v-model="formData.subject" class="object mb-3" type="text" required>
+                            <div v-if="formErrors.subject" class="error"><small>{{ formErrors.subject }}</small>
+                            </div>
 
-                            <label for="message">Messaggio</label>
-                            <input v-model="formData.text" class="message" type="text">
+                            <label for="message" class="mb-2">Messaggio</label>
+                            <input v-model="formData.text" class="message mb-3" type="text" required>
                             <div v-if="formErrors.text" class="error"><small>{{ formErrors.text }}</small></div>
 
-                            <button @click="sendMessage" type="submit">Invia</button>
+                            <button type="submit">Contatta l'Host</button>
                         </form>
 
                     </div>
                 </div>
             </div>
         </div>
+        <div class="divider my-5"></div>
+        <h3 class="mb-4">Dove sarai</h3>
+        <div class="map">
+
+        </div>
     </div>
 
 </template>
 
 <style scoped lang="scss">
+i {
+    color: #4BC9E4;
+    cursor: pointer;
+}
+
 .error {
     color: red;
 }
 
-h4 {
-    font-size: 2.5rem;
-    font-weight: bold;
-
-}
-
-
 .primary-img {
-    border-radius: 10px;
-    width: 1200px;
-    height: 700px;
-
-
-    margin: 30px;
+    border-radius: 10px 0 0 10px;
+    min-height: 500px;
+    width: 100%;
 }
 
 /* Carosello */
@@ -268,20 +354,6 @@ h4 {
 
 }
 
-.fas {
-    font-size: 2rem
-}
-
-
-
-.fa-arrow-left {
-    cursor: pointer;
-
-}
-
-.fa-arrow-right {
-    cursor: pointer;
-}
 
 #thumbnails {
     display: flex;
@@ -292,20 +364,10 @@ h4 {
 
 }
 
-img {
-    border-radius: 10px;
-    height: 130px;
-}
-
 /* info Appartamento  */
 
 .row {
     margin-top: 20px;
-}
-
-.name-user {
-    font-size: 1.5rem;
-    font-weight: bold;
 }
 
 .apartment-info {
@@ -329,7 +391,6 @@ img {
     }
 
     img {
-        height: 25px;
         width: 30px;
     }
 }
@@ -346,6 +407,10 @@ img {
 
     border-radius: 25px;
     box-shadow: 5px 5px 30px gray;
+
+    .card-title {
+        color: #4BC9E4;
+    }
 
 
     p {
@@ -365,7 +430,14 @@ img {
         color: white;
         font-weight: 600;
 
+        & {
+            transition: transform 0.5s ease;
+        }
 
+        &:hover {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
     }
 
     form {
@@ -397,7 +469,12 @@ img {
     height: 2px;
     background-color: rgb(109, 109, 109, 0.2);
     margin-bottom: 20px;
-    max-width: 400px;
+    max-width: 100%;
+}
+
+.map {
+    height: 500px;
+    background-color: beige;
 }
 
 @keyframes active {
