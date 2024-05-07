@@ -14,6 +14,8 @@ export default {
     props: {
         hasBorder: Boolean,
         rounded: Boolean,
+        hasPadding: Boolean,
+        isCol: Boolean,
         fullWidth: Boolean
     },
     computed: {
@@ -67,12 +69,12 @@ export default {
 </script>
 
 <template>
-    <div style="position: relative;" class="h-100 flex-grow-1 ">
+    <div style="position: relative;" :class="isCol ? 'col-12 col-md-6 px-0' : ''">
         <small id="tips" v-if="showTips" class="d-block">Seleziona uno dei suggerimenti <span
                 class="text-danger">*</span></small>
         <input autocomplete="off" id="search-address" v-model.trim="searchQuery" @input="search"
-            @click.left="deleteAddress" placeholder="Scrivi indirizzo" class="w-100 h-100 "
-            :class="{ 'border-0': !hasBorder, 'rounded-start-pill': rounded }">
+            @click.left="deleteAddress" placeholder="Scrivi indirizzo" class="w-100"
+            :class="{ 'border-0': !hasBorder, 'py-4': hasPadding }">
         <ul id="advertisement-list" class="list-group" v-if="results.length">
             <li class="list-group-item" v-for="(result, index) in results" :key="index" @click="selectResult(result)">
                 <!-- @click="$emit('selectAddress', result.address.freeformAddress)"> -->

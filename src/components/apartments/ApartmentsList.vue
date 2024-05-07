@@ -13,7 +13,7 @@ export default {
 
 <template>
     <div class="row">
-        <div v-for="apartment in apartments" v-if="apartments.length" class="col-12 col-md-6 col-lg-3">
+        <div v-for="apartment in apartments" v-if="apartments.length" class="col-12 col-sm-6 col-lg-4 col-xxl-3">
             <ApartmentCard :key="apartment.id" :apartment="apartment" :hasDistance="hasDistance"
                 :isSponsored="isSponsored" />
         </div>

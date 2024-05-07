@@ -53,8 +53,9 @@ export default {
                     <h3 class="card-title">Trova alloggi su Boolbnb</h3>
                     <p class="mb-4">Alloggi e stanze per ogni tipo di esigenza</p>
                     <form @submit.prevent>
-                        <div style="">
-                            <TomTomAutocomplete :hasBorder="true" :fullWidth="true" @selectAddress="setAddress" />
+                        <div class="">
+                            <TomTomAutocomplete :isCol="false" :hasPadding="false" :hasBorder="true" :fullWidth="true"
+                                @selectAddress="setAddress" />
                         </div>
                         <RouterLink class="bnt button"
                             :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: 20, price: 0, rooms: 0, beds: 0, services: JSON.stringify([]) } }">
