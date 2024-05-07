@@ -14,7 +14,9 @@ export default {
         searchAddress: '',
         latitude: 0,
         longitude: 0,
-        store
+        store,
+
+
     }),
     methods: {
         fetchApartments() {
@@ -63,7 +65,12 @@ export default {
             <img src="../assets/homephoto.jpg" alt="homephoto">
         </section>
 
-        <ApartmentsList v-if="!store.isLoading && apartments" :apartments="apartments" />
+        <section id="sponsor">
+            <h1 class="my-3">Appartamenti in evidenza</h1>
+            <ApartmentsList v-if="!store.isLoading && apartments" :apartments="sponsoredApartments"
+                :isSponsored="true" />
+        </section>
+
     </div>
 
 </template>
@@ -75,6 +82,10 @@ export default {
 
 .container {
     padding: 0px;
+}
+
+#sponsor {
+    margin-top: 150px;
 }
 
 .jumbotron {
