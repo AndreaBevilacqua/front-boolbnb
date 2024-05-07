@@ -23,9 +23,52 @@ export default {
         roomsInput: 0,
         kmInput: 20,
         store,
-        showModal: false
+        showModal: false,
+        distanceError: false,
+        priceError: false,
+        roomsError: false,
+        bedsError: false,
+        serviceError: false
+
     }),
     methods: {
+        validateDistance() {
+            // Verifica se il valore della distanza è compreso tra 1 e 100
+            if (this.kmInput < 1 || this.kmInput > 100 || !/^[a-zA-Z0-9\s]*$/.test(this.bedsInput)) {
+                this.distanceError = true; // Flag per mostrare il messaggio di errore
+            } else {
+                // Se il valore è valido, nascondi il messaggio di errore o esegui un'altra azione necessaria
+                this.distanceError = false;
+            }
+        },
+        validatePrice() {
+            // Controllo se il campo è vuoto o contiene solo spazi o simboli, se è minore di
+            if (this.priceInput === null || /^\s*$/.test(this.priceInput) || !/^[a-zA-Z0-9\s]*$/.test(this.priceInput) || isNaN(this.priceInput) || this.priceInput < 0 || this.priceInput > 9999.99) {
+                this.priceError = true;
+            } else {
+                this.priceError = false;
+            }
+        },
+        validateRooms() {
+            console.log(this.roomsInput)
+            if (this.roomsInput < 0 || !this.roomsInput || /^\s*$/.test(this.roomsInput) || !/^[a-zA-Z0-9\s]*$/.test(this.roomsInput) || isNaN(this.roomsInput) || this.roomsInput > 50) {
+                this.roomsError = true;
+            } else {
+                this.roomsError = false;
+            }
+        },
+
+        validateBeds() {
+            if (this.bedsInput < 0 || !this.bedsInput || /^\s*$/.test(this.bedsInput) || !/^[a-zA-Z0-9\s]*$/.test(this.bedsInput) || isNaN(this.bedsInput) || this.bedsInput > 50) {
+                this.bedsError = true;
+            } else {
+                this.bedsError = false;
+            }
+        },
+        validateServices() {
+            // Verifica che tutti i servizi selezionati siano presenti nell'array `services`
+            this.serviceError = this.checkedServices.some(serviceId => !this.services.find(service => service.id === serviceId));
+        },
         deleteAddress() {
             this.searchAddress = '';
             this.latitude = null;
@@ -70,7 +113,6 @@ export default {
                     }
                 })
                 this.apartments = res.data;
-                console.log(this.apartments)
             } catch (err) {
                 console.error(err);
             } finally {
@@ -129,12 +171,13 @@ export default {
     <!-- Ricerca di un appartamento -->
     <div class="d-flex justify-content-center gap-3">
         <div id="address-searchbar" class="searchbar rounded-pill shadow-sm container m-0 px-0">
-            <form @submit.prevent class="d-flex justify-content-between align-items-center w-100 h-100">
-                <TomTomAutocomplete :rounded="true" :showLabel="false" id="place" @selectAddress="setAddress"
+            <form @submit.prevent class="d-flex align-items-center w-100 h-100">
+                <TomTomAutocomplete :fullWidth="true" :rounded="true" id="place" @selectAddress="setAddress"
                     @deleteAddress="deleteAddress" />
-                <RouterLink class="btn btn-primary rounded-end-pill h-100 d-flex align-items-center  px-4"
+                <RouterLink style="width: fit-content;"
+                    class="btn btn-primary rounded-end-pill h-100 d-flex align-items-center justify-content-center px-4 flex-shrink-0 "
                     :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
-                    Cerca
+                    {{ searchAddress ? 'Cerca: ' + searchAddress : 'Cerca su tutto il territorio' }}
                 </RouterLink>
             </form>
         </div>
@@ -145,7 +188,6 @@ export default {
             <font-awesome-icon icon="fa-solid fa-sort" />Filtri avanzati
         </button>
 
-        <!-- Modale per i filtri -->
         <div class="modal fade show" v-if="showModal" id="filters-modal">
             <div class="modal-dialog modal-dialog-scrollable modal-xl">
                 <div class="modal-content rounded">
@@ -164,7 +206,7 @@ export default {
                             </label>
                             <div class="range-wrap">
                                 <input type="range" class="form-range" id="km" min="1" max="100" step="1"
-                                    v-model="kmInput">
+                                    v-model="kmInput" @input="validateDistance">
                             </div>
                             <div class="d-flex justify-content-between">
                                 <div>
@@ -174,23 +216,32 @@ export default {
                                     100 km
                                 </div>
                             </div>
+                            <p v-if="distanceError" class="text-danger">La distanza deve essere un numero, compreso tra
+                                1 e 100 km.
+                            </p>
                         </div>
-                        <!-- Mappa -->
 
                         <!-- Prezzo -->
                         <div class="mb-3">
-                            <label for="price" class="form-label">Pezzo per notte</label>
+                            <label for="price" class="form-label">Prezzo per notte</label>
                             <div class="input-group">
                                 <span class="input-group-text">&euro;</span>
                                 <input type="number" class="form-control" id="price" aria-label="0.00" step="10"
-                                    min="10" max="9999.99" v-model="priceInput" @blur="setPriceInput">
+                                    min="10" max="9999.99" v-model="priceInput" @blur="validatePrice">
                             </div>
+                            <!-- Messaggio di errore per il prezzo -->
+                            <p v-if="priceError || (parseFloat(priceInput) >= 1 && parseFloat(priceInput) <= 9 || !this.priceInput)"
+                                class="text-danger">
+                                Il prezzo deve essere un numero valido, compreso tra 10 e 9999.99.
+                            </p>
                         </div>
+
                         <div class="row">
                             <!-- Numero di stanze -->
                             <div class="col-6">
                                 <label for="rooms" class="form-label">Numero di stanze</label>
-                                <select name="rooms" id="rooms" class="form-select" v-model="roomsInput">
+                                <select name="rooms" id="rooms" class="form-select" v-model="roomsInput"
+                                    @change="validateRooms">
                                     <option selected value="0">Scegli...</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -201,11 +252,14 @@ export default {
                                     <option value="7">7</option>
                                     <option value="8">8+</option>
                                 </select>
+                                <p v-if="roomsError" class="text-danger">Le stanze devono essere un numero valido,
+                                    compreso tra 1 e 50</p>
                             </div>
                             <!-- Numero posti letto -->
                             <div class="col-6">
                                 <label for="beds" class="form-label">Numero di letti</label>
-                                <select name="beds" id="beds" class="form-select" v-model="bedsInput">
+                                <select name="beds" id="beds" class="form-select" v-model="bedsInput"
+                                    @change="validateBeds">
                                     <option selected value="0">Scegli...</option>
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -215,12 +269,13 @@ export default {
                                     <option value="6">6</option>
                                     <option value="7">7</option>
                                     <option value="8">8+</option>
-
                                 </select>
+                                <p v-if="bedsError" class="text-danger">Il numero di letti deve essere un numero valido,
+                                    compreso tra 1 e 50</p>
                             </div>
-                        </div>
 
-                        <!-- Filtro Servizi -->
+
+                        </div>
                         <div class="mt-3 mb-2 fs-4">
                             <strong>Servizi</strong>
                         </div>
@@ -228,29 +283,44 @@ export default {
                             <div class="form-check p-0">
                                 <div class="mb-1" v-for="service in services" :key="service.id">
                                     <input class="form-check-input ms-2" type="checkbox" :id="`service-${service.id}`"
-                                        v-model="checkedServices" :value="service.id">
+                                        v-model="checkedServices" :value="service.id" @change="validateServices">
                                     <label class="form-check-label ms-2" :for="`service-${service.id}`">
                                         {{ service.label }}
                                     </label>
                                 </div>
                             </div>
+                            <!-- Messaggio di errore -->
+                            <p v-if="serviceError" class="text-danger">Il servizio selezionato non esiste o non è
+                                presente
+                                nel nostro sistema
+                            </p>
                         </div>
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" @click="resetFilters()">Rimuovi filtri</button>
 
                         <!-- Bottono Applica filtri -->
-                        <RouterLink @click="showModal = false" class="btn btn-primary"
-                            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
-                            Applica filtri
-                        </RouterLink>
+                        <div v-if="!distanceError && !priceError && !roomsError && !bedsError && !serviceError">
+                            <RouterLink @click="showModal = false" class="btn btn-primary"
+                                :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
+                                Applica filtri
+                            </RouterLink>
+                        </div>
+                        <div v-else>
+                            <button class="btn btn-primary" disabled>Applica filtri</button>
+                        </div>
+
+
+
                     </div>
                 </div>
             </div>
+
+
         </div>
-        <!-- ---------------------- CHIUSURA MODALE ---------------------- -->
     </div>
+
+    <!-- ---------------------- CHIUSURA MODALE ---------------------- -->
     <h1 class="mt-5 mb-3">Appartamenti BoolBnb</h1>
     <ApartmentsList v-if="!store.isLoading && apartments" :apartments="apartments" />
 </template>

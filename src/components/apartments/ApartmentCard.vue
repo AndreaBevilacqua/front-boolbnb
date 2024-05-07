@@ -4,7 +4,9 @@ import { RouterLink } from 'vue-router';
 export default {
     name: 'ApartmentCard',
     data: () => ({
-        showDistance: false
+        showDistance: false,
+        carouselImages: [],
+        currentIndex: 0
     }),
     props: {
         apartment: Object,
@@ -22,10 +24,28 @@ export default {
             } else {
                 this.showDistance = false;
             }
-        }
+        },
+        loadCarouselImages() {
+            this.carouselImages.push(this.apartment.image);
+            for (let image of this.apartment.images) {
+                this.carouselImages.push(image.path);
+            }
+        },
+        goToNext() {
+            const lastElementIndex = this.carouselImages.length - 1;
+            if (this.currentIndex === lastElementIndex) this.currentIndex = 0;
+            else this.currentIndex++;
+        },
+        goToPrev() {
+            const lastElementIndex = this.carouselImages.length - 1;
+            if (this.currentIndex === 0) this.currentIndex = lastElementIndex;
+            else this.currentIndex--;
+        },
+
     },
     created() {
         this.formattedDistance()
+        this.loadCarouselImages();
     }
 }
 </script>
@@ -35,6 +55,19 @@ export default {
         <div class="card position-relative">
             <img :src="apartment.image" class="card-img-top img-fluid" alt="...">
             <i class="fa-solid fa-medal fa-beat-fade rounded-circle my-icon position-absolute"></i>
+        <div class="card">
+            <!-- carosello  -->
+            <div class="carousel">
+
+                <!-- prev button -->
+                <i class="fas fa-chevron-left" @click="goToPrev"></i>
+
+                <img v-for="(image, i) in carouselImages" v-show="currentIndex === i" class="img-fluid" :src="image"
+                    :alt="apartment.title">
+
+                <!-- next button -->
+                <i class="fas fa-chevron-right" @click="goToNext"></i>
+            </div>
             <RouterLink class="card-body text-decoration-none"
                 :to="{ name: 'detail-page', params: { slug: apartment.slug } }">
                 <h5>{{ apartment.title }}</h5>
@@ -122,9 +155,31 @@ export default {
     }
 
     img {
-        height: 260px;
-        object-fit: cover;
+
+        height: 240px;
+        width: 100%;
         border-radius: 5px 5px 0px 0px;
+    }
+
+    .fa-chevron-left,
+    .fa-chevron-right {
+        position: absolute;
+        font-size: 1.8rem;
+        color: white;
+        text-shadow: 1px 2px 5px #4BC9E4;
+        cursor: pointer;
+    }
+
+    .fa-chevron-left {
+        left: 20px;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .fa-chevron-right {
+        right: 4px;
+        top: 50%;
+        transform: translate(-50%, -50%);
     }
 }
 </style>
