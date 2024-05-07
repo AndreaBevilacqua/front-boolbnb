@@ -26,6 +26,6 @@ export default {
 main {
   height: calc(100vh - 130px);
   overflow: auto;
-  padding: 3rem;
+  //padding: 3rem;
 }
 </style>

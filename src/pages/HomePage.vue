@@ -46,7 +46,7 @@ export default {
 </script>
 
 <template>
-    <div class="container-fluid">
+    <div class="container-fluid p-5">
         <section class="jumbotron container mb-5">
             <div class="card p-4">
                 <div class="card-body">
