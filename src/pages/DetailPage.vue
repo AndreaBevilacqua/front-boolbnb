@@ -1,6 +1,7 @@
 <script>
 import axios from 'axios';
 import { store } from '../assets/Data/store';
+import Carousel from '../components/apartments/ApartmentCarousel.vue';
 
 const endpoint = 'http://localhost:8000/api/apartments/';
 const messageEndpoint = 'http://localhost:8000/api/contact-message/';
@@ -26,6 +27,7 @@ export default {
             isLoading: store.isLoading
         };
     },
+    components: { Carousel },
     methods: {
         async getApartment() {
             try {
@@ -174,62 +176,35 @@ export default {
 </script>
 
 <template>
-    <div class="container-fluid px-5" v-if="apartment">
+    <div class="container-fluid py-2" v-if="apartment">
         <h1 class="mb-3">{{ apartment.title }}</h1>
         <span> <i class="fa-solid fa-location-dot me-2"></i>{{ apartment.address }}.</span>
-        <!-- carosello  -->
-        <!-- <div class="carousel"> -->
-
-        <!-- prev button -->
-        <!-- <i class="fas fa-arrow-left" @click="goToPrev"></i> -->
-
-        <!-- <div class="gallery">  -->
-        <!-- immagine principale-->
-        <!-- <figure v-for="(image, i) in carouselImages" v-show="currentIndex === i">
-                    <img class="primary-img" :src="image" :alt="apartment.title">
-                </figure>
-            </div> -->
-
-        <!-- next button -->
-        <!-- <i class="fas fa-arrow-right" @click="goToNext"></i> -->
-
-        <!-- </div> -->
-        <!-- thumbnails -->
-        <!-- <div id="thumbnails">
-            <img @click="currentIndex = i" v-for="(image, i) in carouselImages" :src="image" :alt="apartment.title"
-                :class="{ active: i === currentIndex }">
-        </div> -->
-        <div class="images">
+        <!--Carousel-->
+        <div class="image">
             <div class="row align-items-center">
                 <!-- prev button -->
                 <div class="col-auto">
                     <i class="fas fa-chevron-left fa-xl" @click="goToPrev" style="color: #0E485B;"></i>
                 </div>
                 <div class="col">
+
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-12">
                             <figure v-for="(image, i) in carouselImages" v-show="currentIndex === i">
                                 <img class="primary-img" :src="image" :alt="apartment.title">
                             </figure>
                         </div>
-                        <div class="col-6">
-                            <div class="row">
-                                <div class="col-6">
 
-                                </div>
-                                <div class="col-6">
-
-                                </div>
-                                <div class="col-12">
-
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <!-- next button -->
                 <div class="col-auto">
                     <i class="fas fa-chevron-right fa-xl" @click="goToNext" style="color: #0E485B;"></i>
+                </div>
+                <!-- thumbnails -->
+                <div class="d-none" id="thumbnails">
+                    <img @click="currentIndex = i" v-for="(image, i) in carouselImages" :src="image"
+                        :alt="apartment.title" :class="{ active: i === currentIndex }">
                 </div>
             </div>
         </div>
@@ -372,8 +347,8 @@ i {
 }
 
 .primary-img {
-    border-radius: 10px 0 0 10px;
-    min-height: 500px;
+    border-radius: 10px;
+    height: 150px;
     width: 100%;
 }
 
@@ -400,6 +375,10 @@ i {
     gap: 20px;
     cursor: pointer;
     height: 200px;
+
+    img {
+        height: 30px;
+    }
 
 }
 

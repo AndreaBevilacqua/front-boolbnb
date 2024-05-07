@@ -1,12 +1,13 @@
 <script>
 import { RouterLink } from 'vue-router';
-
+import Carousel from './ApartmentCarousel.vue';
 export default {
     name: 'ApartmentCard',
+    components: { Carousel },
     data: () => ({
         showDistance: false,
-        carouselImages: [],
-        currentIndex: 0
+        // carouselImages: [],
+        // currentIndex: 0
     }),
     props: {
         apartment: Object,
@@ -26,27 +27,27 @@ export default {
                 this.showDistance = false;
             }
         },
-        loadCarouselImages() {
-            this.carouselImages.push(this.apartment.image);
-            for (let image of this.apartment.images) {
-                this.carouselImages.push(image.path);
-            }
-        },
-        goToNext() {
-            const lastElementIndex = this.carouselImages.length - 1;
-            if (this.currentIndex === lastElementIndex) this.currentIndex = 0;
-            else this.currentIndex++;
-        },
-        goToPrev() {
-            const lastElementIndex = this.carouselImages.length - 1;
-            if (this.currentIndex === 0) this.currentIndex = lastElementIndex;
-            else this.currentIndex--;
-        },
+        // loadCarouselImages() {
+        //     this.carouselImages.push(this.apartment.image);
+        //     for (let image of this.apartment.images) {
+        //         this.carouselImages.push(image.path);
+        //     }
+        // },
+        // goToNext() {
+        //     const lastElementIndex = this.carouselImages.length - 1;
+        //     if (this.currentIndex === lastElementIndex) this.currentIndex = 0;
+        //     else this.currentIndex++;
+        // },
+        // goToPrev() {
+        //     const lastElementIndex = this.carouselImages.length - 1;
+        //     if (this.currentIndex === 0) this.currentIndex = lastElementIndex;
+        //     else this.currentIndex--;
+        // },
 
     },
     created() {
         this.formattedDistance()
-        this.loadCarouselImages();
+        // this.loadCarouselImages();
     }
 }
 </script>
@@ -55,19 +56,10 @@ export default {
     <div class="col">
         <!-- <img :src="apartment.image" class="card-img-top img-fluid" alt="..."> -->
         <div class="card position-relative">
+            <i v-if="isSponsored" class="fa-solid fa-medal fa-beat-fade rounded-circle my-icon position-absolute"></i>
             <!-- carosello  -->
             <div class="carousel">
-                <i v-if="isSponsored"
-                    class="fa-solid fa-medal fa-beat-fade rounded-circle my-icon position-absolute"></i>
-
-                <!-- prev button -->
-                <i class="fas fa-chevron-left" @click="goToPrev"></i>
-
-                <img v-for="(image, i) in carouselImages" v-show="currentIndex === i" class="img-fluid" :src="image"
-                    :alt="apartment.title">
-
-                <!-- next button -->
-                <i class="fas fa-chevron-right" @click="goToNext"></i>
+                <Carousel :apartment="apartment" />
             </div>
             <RouterLink class="card-body text-decoration-none"
                 :to="{ name: 'detail-page', params: { slug: apartment.slug } }">
