@@ -34,8 +34,7 @@ export default {
     <div class="col">
         <div class="card position-relative">
             <img :src="apartment.image" class="card-img-top img-fluid" alt="...">
-            <i v-if="apartment.sponsorship"
-                class="fa-solid fa-medal fa-beat-fade rounded-circle my-icon position-absolute"></i>
+            <i class="fa-solid fa-medal fa-beat-fade rounded-circle my-icon position-absolute"></i>
             <RouterLink class="card-body text-decoration-none"
                 :to="{ name: 'detail-page', params: { slug: apartment.slug } }">
                 <h5>{{ apartment.title }}</h5>
