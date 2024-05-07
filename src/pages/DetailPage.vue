@@ -210,7 +210,7 @@ export default {
         </div>
 
         <div class="row">
-            <div class="col-8">
+            <div class="col-12">
 
                 <h1 class="mb-0">Host: {{ apartment.user.name }}</h1>
                 <button @click="showModal = true" class="btn btn-sm btn-dark my-3">
