@@ -171,24 +171,23 @@ export default {
 
 <template>
     <!-- Ricerca di un appartamento -->
-    <div class="d-flex justify-content-center gap-3">
-        <div id="address-searchbar" class="searchbar rounded-pill shadow-sm container m-0 px-0">
-            <form @submit.prevent class="d-flex align-items-center w-100 h-100">
-                <TomTomAutocomplete :fullWidth="true" :rounded="true" id="place" @selectAddress="setAddress"
-                    @deleteAddress="deleteAddress" />
-                <RouterLink style="width: fit-content;"
-                    class="btn btn-primary rounded-end-pill h-100 d-flex align-items-center justify-content-center px-4 flex-shrink-0 "
-                    :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
-                    {{ searchAddress ? 'Cerca: ' + searchAddress : 'Cerca su tutto il territorio' }}
-                </RouterLink>
-            </form>
-        </div>
 
-        <!-- Bottone per Filtrare -->
-        <button id="filters-button" type="button" class="rounded-pill p-3 shadow-sm d-flex align-items-center gap-2"
-            @click="showModal = true">
-            <font-awesome-icon icon="fa-solid fa-sort" />Filtri avanzati
-        </button>
+
+    <form @submit.prevent class=" container-fluid m-0 px-0 row row-gap-3 mb-3">
+        <TomTomAutocomplete :isCol="true" :hasPadding="true" :fullWidth="true" :rounded="true" id="place"
+            :hasBorder="true" @selectAddress="setAddress" @deleteAddress="deleteAddress" />
+        <RouterLink class=" py-4 col-12 col-md-6 btn btn-primary d-flex align-items-center justify-content-center px-4 "
+            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
+            {{ searchAddress ? 'Cerca: ' + searchAddress : 'Cerca su tutto il territorio' }}
+        </RouterLink>
+    </form>
+
+    <!-- Bottone per Filtrare -->
+    <button id="filters-button" type="button" class="rounded-pill p-3 shadow-sm d-flex align-items-center gap-2"
+        @click="showModal = true">
+        <font-awesome-icon icon="fa-solid fa-sort" />Filtri avanzati
+    </button>
+    <div class="d-flex justify-content-center gap-3">
 
         <div class="modal fade show" v-if="showModal" id="filters-modal">
             <div class="modal-dialog modal-dialog-scrollable modal-xl">
@@ -336,7 +335,7 @@ export default {
     border: 0.5px solid gray;
 
     input {
-        width: 95%;
+        width: 100%;
         border: none;
         outline: none;
     }
