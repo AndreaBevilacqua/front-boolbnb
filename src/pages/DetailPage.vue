@@ -494,6 +494,7 @@ i {
     height: 500px;
     width: 100%;
     background-color: beige;
+    margin-bottom: 15px;
 }
 
 @keyframes active {
