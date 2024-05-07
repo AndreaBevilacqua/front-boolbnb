@@ -12,7 +12,8 @@ export default {
     name: 'FilteredApartmentPage',
     components: { ApartmentsList, TomTomAutocomplete },
     data: () => ({
-        apartments: [],
+        sponsoredApartments: [],
+        unsponsoredApartments: [],
         services: [],
         checkedServices: [],
         searchAddress: '',
@@ -112,7 +113,8 @@ export default {
                         services: JSON.stringify(this.checkedServices)
                     }
                 })
-                this.apartments = res.data;
+                this.sponsoredApartments = res.data.sponsored;
+                this.unsponsoredApartments = res.data.unsponsored;
             } catch (err) {
                 console.error(err);
             } finally {
@@ -321,8 +323,12 @@ export default {
     </div>
 
     <!-- ---------------------- CHIUSURA MODALE ---------------------- -->
-    <h1 class="mt-5 mb-3">Appartamenti BoolBnb</h1>
-    <ApartmentsList v-if="!store.isLoading && apartments" :apartments="apartments" />
+    <h1 class="mt-5 mb-3">Appartamenti in evidenza</h1>
+    <ApartmentsList v-if="!store.isLoading && sponsoredApartments" :apartments="sponsoredApartments"
+        :isSponsored="true" />
+    <h1 class="mt-5 mb-3">Appartamenti BoolBnb </h1>
+    <ApartmentsList v-if="!store.isLoading && unsponsoredApartments" :apartments="unsponsoredApartments"
+        :isSponsored="false" />
 </template>
 
 <style scoped lang="scss">

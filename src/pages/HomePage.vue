@@ -9,12 +9,13 @@ export default {
     name: 'HomePage',
     components: { ApartmentsList, TomTomAutocomplete },
     data: () => ({
-        apartments: [],
         sponsoredApartments: [],
+        unsponsoredApartments: [],
         searchAddress: '',
         latitude: 0,
         longitude: 0,
         store,
+
 
 
     }),
@@ -22,7 +23,7 @@ export default {
         fetchApartments() {
             store.isLoading = true
             axios.get(endpoint).then(res => {
-                this.apartments = res.data.all
+                this.unsponsoredApartments = res.data.unsponsored
                 this.sponsoredApartments = res.data.sponsored
             }).catch(err => {
                 console.error(err)
@@ -67,7 +68,7 @@ export default {
 
         <section id="sponsor">
             <h1 class="my-3">Appartamenti in evidenza</h1>
-            <ApartmentsList v-if="!store.isLoading && apartments" :apartments="sponsoredApartments"
+            <ApartmentsList v-if="!store.isLoading && sponsoredApartments" :apartments="sponsoredApartments"
                 :isSponsored="true" />
         </section>
 
