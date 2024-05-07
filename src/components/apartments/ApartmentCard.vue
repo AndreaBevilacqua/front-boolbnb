@@ -52,12 +52,11 @@ export default {
 
 <template>
     <div class="col">
+        <!-- <img :src="apartment.image" class="card-img-top img-fluid" alt="..."> -->
         <div class="card position-relative">
-            <img :src="apartment.image" class="card-img-top img-fluid" alt="...">
-            <i class="fa-solid fa-medal fa-beat-fade rounded-circle my-icon position-absolute"></i>
-        <div class="card">
             <!-- carosello  -->
             <div class="carousel">
+                <i class="fa-solid fa-medal fa-beat-fade rounded-circle my-icon position-absolute"></i>
 
                 <!-- prev button -->
                 <i class="fas fa-chevron-left" @click="goToPrev"></i>
