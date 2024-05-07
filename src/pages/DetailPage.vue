@@ -1,6 +1,6 @@
 <script>
 import axios from 'axios';
-import { store } from '../assets/Data/store';
+import AppLoader from '../components/AppLoader.vue';
 import Carousel from '../components/apartments/ApartmentCarousel.vue';
 
 const endpoint = 'http://localhost:8000/api/apartments/';
@@ -24,7 +24,8 @@ export default {
                 text: ''
             },
             formErrors: {},
-            isLoading: store.isLoading
+            isLoading: false,
+            showModal: false
         };
     },
     components: { Carousel },
@@ -74,7 +75,7 @@ export default {
         sendMessage() {
             if (this.validateForm()) {
                 // Imposta isLoading su true solo prima di inviare effettivamente il messaggio
-                store.isLoading = true;
+                this.isLoading = true;
 
                 axios.post(`${messageEndpoint}${this.apartment.id}`, this.formData)
                     .then(response => {
@@ -84,9 +85,6 @@ export default {
                             this.closeAlert();
                         }, 5000);
                         this.formData = {};
-
-                        // Imposta isLoading su false solo in caso di successo
-                        store.isLoading = false;
                     })
                     .catch(error => {
                         // Gestisci gli errori di invio del messaggio
@@ -96,6 +94,8 @@ export default {
                         }, 5000);
 
 
+                    }).then(() => {
+                        this.isLoading = false;
                     });
             }
         },
@@ -212,7 +212,9 @@ export default {
         <div class="row">
             <div class="col-8">
 
-                <h1>Host: {{ apartment.user.name }}</h1>
+                <h1 class="mb-0">Host: {{ apartment.user.name }}</h1>
+                <button @click="showModal = true" class="btn btn-sm btn-dark my-3">
+                    <i class="fa-solid fa-envelope"></i> Contatta</button>
                 <ul class="apartment-info">
                     <li>Camere: {{ apartment.rooms }} -</li>
                     <li>Letti: {{ apartment.beds }} -</li>
@@ -285,41 +287,72 @@ export default {
                     </ul>
                 </div>
             </div>
-            <div class="col-4">
-                <div class="card p-4">
-                    <div class="card-body">
-                        <h4 class="card-title text-center mb-3">Vuoi saperne di piú?</h4>
 
-                        <form @submit.prevent="sendMessage">
-                            <label for="name" class="mb-2">Nome</label>
-                            <input v-model="formData.name" type="text" placeholder="Mario" class="mb-3" required>
-                            <div v-if="formErrors.name" class="error"><small>{{ formErrors.name }}</small></div>
+            <!-- Modale per i messaggi -->
+            <div class="modal fade show" v-if="showModal" id="messages-modal">
+                <div class="row modal-dialog">
+                    <div class="col-12 col-md-6 col-lg-4 modal-content rounded">
 
-                            <label for="last_name" class="mb-2">Cognome</label>
-                            <input v-model="formData.last_name" type="text" placeholder="Rossi" class="mb-3" required>
-                            <div v-if="formErrors.last_name" class="error"><small>{{ formErrors.last_name }}</small>
-                            </div>
+                        <!-- Header Modale -->
+                        <div class="modal-header">
+                            <h4 class="modal-title text-center">Vuoi saperne di piú?</h4>
 
-                            <label for="email" class="mb-2">E-mail</label>
-                            <input v-model="formData.email" type="email" placeholder="mariorossi@example.com"
-                                class="mb-3" required>
-                            <div v-if="formErrors.email" class="error"><small>{{ formErrors.email }}</small></div>
+                            <!-- Bottone per chiudere la modale -->
+                            <button type="button" class="btn-close" @click="showModal = false"></button>
+                        </div>
 
-                            <label for="subject" class="mb-2">Oggetto</label>
-                            <input v-model="formData.subject" class="object mb-3" type="text" required>
-                            <div v-if="formErrors.subject" class="error"><small>{{ formErrors.subject }}</small>
-                            </div>
+                        <!-- Body modale -->
+                        <div class="modal-body">
 
-                            <label for="message" class="mb-2">Messaggio</label>
-                            <input v-model="formData.text" class="message mb-3" type="text" required>
-                            <div v-if="formErrors.text" class="error"><small>{{ formErrors.text }}</small></div>
+                            <form @submit.prevent="sendMessage">
+                                <!-- Nome -->
+                                <label for="name" class="mb-2">Nome</label>
+                                <input v-model="formData.name" type="text" placeholder="Mario" class="mb-3" required>
+                                <div v-if="formErrors.name" class="error"><small>{{ formErrors.name }}</small></div>
 
-                            <button type="submit">Contatta l'Host</button>
-                        </form>
+                                <!-- Cognome -->
+                                <label for="last_name" class="mb-2">Cognome</label>
+                                <input v-model="formData.last_name" type="text" placeholder="Rossi" class="mb-3"
+                                    required>
+                                <div v-if="formErrors.last_name" class="error"><small>{{ formErrors.last_name
+                                        }}</small>
+                                </div>
 
+                                <!-- Email -->
+                                <label for="email" class="mb-2">E-mail</label>
+                                <input v-model="formData.email" type="email" placeholder="mariorossi@example.com"
+                                    class="mb-3" required>
+                                <div v-if="formErrors.email" class="error"><small>{{ formErrors.email }}</small>
+                                </div>
+
+                                <!-- Oggetto -->
+                                <label for="subject" class="mb-2">Oggetto</label>
+                                <input v-model="formData.subject" class="object mb-3" type="text" required>
+                                <div v-if="formErrors.subject" class="error"><small>{{ formErrors.subject }}</small>
+                                </div>
+
+                                <!-- Testo messaggio -->
+                                <label for="message" class="mb-2">Messaggio</label>
+                                <textarea v-model="formData.text" class="message mb-3" cols="30" rows="10"
+                                    required></textarea>
+                                <!-- <input v-model="formData.text" class="message mb-3" type="text" required> -->
+                                <div v-if="formErrors.text" class="error"><small>{{ formErrors.text }}</small></div>
+
+                                <!-- Bottone invio -->
+                                <div class="modal-footer">
+                                    <button id="message-btn" type="submit" class="btn btn-sm btn-dark">Contatta
+                                        l'Host</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Uso un Loader in locale altrimenti si posiziona sotto la modale dei messaggi -->
+                <AppLoader v-if="isLoading" />
             </div>
+            <!-- Fine modale -->
+
         </div>
         <div class="divider my-5"></div>
         <h3 class="mb-4">Dove sarai</h3>
@@ -419,14 +452,10 @@ i {
 
 /** card messaggistica */
 
-.card {
-    border: none;
-    width: 500px;
+.modal {
 
-    border-radius: 25px;
-    box-shadow: 5px 5px 30px gray;
 
-    .card-title {
+    .modal-title {
         color: #4BC9E4;
     }
 
@@ -435,7 +464,7 @@ i {
         color: rgba(128, 128, 128, 0.5);
     }
 
-    button {
+    button#message-btn {
         display: block;
         width: 100%;
         height: 2.5rem;
@@ -463,7 +492,8 @@ i {
             font-size: 1.1rem;
         }
 
-        input {
+        input,
+        textarea {
             display: block;
             width: 100%;
             height: 2rem;
@@ -510,5 +540,11 @@ i {
     100% {
         height: 130px;
     }
+}
+
+// Modale Messaggi
+#messages-modal {
+    display: block;
+    background-color: rgba($color: #000000, $alpha: .5);
 }
 </style>
