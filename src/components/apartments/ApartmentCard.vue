@@ -32,8 +32,10 @@ export default {
 
 <template>
     <div class="col">
-        <div class="card">
+        <div class="card position-relative">
             <img :src="apartment.image" class="card-img-top img-fluid" alt="...">
+            <i v-if="apartment.sponsorship"
+                class="fa-solid fa-medal fa-beat-fade rounded-circle my-icon position-absolute"></i>
             <RouterLink class="card-body text-decoration-none"
                 :to="{ name: 'detail-page', params: { slug: apartment.slug } }">
                 <h5>{{ apartment.title }}</h5>
@@ -55,6 +57,16 @@ export default {
     border: none;
     margin-top: 50px;
     box-shadow: 3px 3px 15px rgb(189, 187, 187);
+
+    .my-icon {
+        top: 10px;
+        right: 10px;
+        font-size: 1.5rem;
+        color: goldenrod;
+        padding: 10px;
+        z-index: 2;
+        background-color: rgba(255, 255, 255, 0.815);
+    }
 
 
     .card-body {
