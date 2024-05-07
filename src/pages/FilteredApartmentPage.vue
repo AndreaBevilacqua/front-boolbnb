@@ -170,164 +170,172 @@ export default {
 </script>
 
 <template>
-    <!-- Ricerca di un appartamento -->
+    <div class="container-fluid p-4">
+
+        <!-- Ricerca di un appartamento -->
 
 
-    <form @submit.prevent class=" container-fluid m-0 px-0 row row-gap-3 mb-3">
-        <TomTomAutocomplete :isCol="true" :hasPadding="true" :fullWidth="true" :rounded="true" id="place"
-            :hasBorder="true" @selectAddress="setAddress" @deleteAddress="deleteAddress" />
-        <RouterLink class=" py-4 col-12 col-md-6 btn btn-primary d-flex align-items-center justify-content-center px-4 "
-            :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
-            {{ searchAddress ? 'Cerca: ' + searchAddress : 'Cerca su tutto il territorio' }}
-        </RouterLink>
-    </form>
+        <form @submit.prevent class=" container-fluid m-0 px-0 row row-gap-3 mb-3">
+            <TomTomAutocomplete :isCol="true" :hasPadding="true" :fullWidth="true" :rounded="true" id="place"
+                :hasBorder="true" @selectAddress="setAddress" @deleteAddress="deleteAddress" />
+            <RouterLink
+                class=" py-4 col-12 col-md-6 btn btn-primary d-flex align-items-center justify-content-center px-4 "
+                :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
+                {{ searchAddress ? 'Cerca: ' + searchAddress : 'Cerca su tutto il territorio' }}
+            </RouterLink>
+        </form>
 
-    <!-- Bottone per Filtrare -->
-    <button id="filters-button" type="button" class="rounded-pill p-3 shadow-sm d-flex align-items-center gap-2"
-        @click="showModal = true">
-        <font-awesome-icon icon="fa-solid fa-sort" />Filtri avanzati
-    </button>
-    <div class="d-flex justify-content-center gap-3">
+        <!-- Bottone per Filtrare -->
+        <button id="filters-button" type="button" class="rounded-pill p-3 shadow-sm d-flex align-items-center gap-2"
+            @click="showModal = true">
+            <font-awesome-icon icon="fa-solid fa-sort" />Filtri avanzati
+        </button>
+        <div class="d-flex justify-content-center gap-3">
 
-        <div class="modal fade show" v-if="showModal" id="filters-modal">
-            <div class="modal-dialog modal-dialog-scrollable modal-xl">
-                <div class="modal-content rounded">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">
-                            Filtri avanzati
-                        </h1>
-                        <!-- Bottone per chiudere la modale -->
-                        <button type="button" class="btn-close" @click="showModal = false"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <!-- Range per km -->
-                        <div class="mb-3">
-                            <label for="km" class="form-label">
-                                Distanza / km {{ kmInput }}
-                            </label>
-                            <div class="range-wrap">
-                                <input type="range" class="form-range" id="km" min="1" max="100" step="1"
-                                    v-model="kmInput" @input="validateDistance">
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    1 km
+            <div class="modal fade show" v-if="showModal" id="filters-modal">
+                <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                    <div class="modal-content rounded">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">
+                                Filtri avanzati
+                            </h1>
+                            <!-- Bottone per chiudere la modale -->
+                            <button type="button" class="btn-close" @click="showModal = false"></button>
+                        </div>
+                        <div class="modal-body p-4">
+                            <!-- Range per km -->
+                            <div class="mb-3">
+                                <label for="km" class="form-label">
+                                    Distanza / km {{ kmInput }}
+                                </label>
+                                <div class="range-wrap">
+                                    <input type="range" class="form-range" id="km" min="1" max="100" step="1"
+                                        v-model="kmInput" @input="validateDistance">
                                 </div>
-                                <div>
-                                    100 km
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        1 km
+                                    </div>
+                                    <div>
+                                        100 km
+                                    </div>
                                 </div>
-                            </div>
-                            <p v-if="distanceError" class="text-danger">La distanza deve essere un numero, compreso tra
-                                1 e 100 km.
-                            </p>
-                        </div>
-
-                        <!-- Prezzo -->
-                        <div class="mb-3">
-                            <label for="price" class="form-label">Prezzo per notte</label>
-                            <div class="input-group">
-                                <span class="input-group-text">&euro;</span>
-                                <input type="number" class="form-control" id="price" aria-label="0.00" step="10"
-                                    min="10" max="9999.99" v-model="priceInput" @blur="validatePrice">
-                            </div>
-                            <!-- Messaggio di errore per il prezzo -->
-                            <p v-if="priceError || (parseFloat(priceInput) >= 1 && parseFloat(priceInput) <= 9 || !this.priceInput)"
-                                class="text-danger">
-                                Il prezzo deve essere un numero valido, compreso tra 10 e 9999.99.
-                            </p>
-                        </div>
-
-                        <div class="row">
-                            <!-- Numero di stanze -->
-                            <div class="col-6">
-                                <label for="rooms" class="form-label">Numero di stanze</label>
-                                <select name="rooms" id="rooms" class="form-select" v-model="roomsInput"
-                                    @change="validateRooms">
-                                    <option selected value="0">Scegli...</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8+</option>
-                                </select>
-                                <p v-if="roomsError" class="text-danger">Le stanze devono essere un numero valido,
-                                    compreso tra 1 e 50</p>
-                            </div>
-                            <!-- Numero posti letto -->
-                            <div class="col-6">
-                                <label for="beds" class="form-label">Numero di letti</label>
-                                <select name="beds" id="beds" class="form-select" v-model="bedsInput"
-                                    @change="validateBeds">
-                                    <option selected value="0">Scegli...</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                    <option value="6">6</option>
-                                    <option value="7">7</option>
-                                    <option value="8">8+</option>
-                                </select>
-                                <p v-if="bedsError" class="text-danger">Il numero di letti deve essere un numero valido,
-                                    compreso tra 1 e 50</p>
+                                <p v-if="distanceError" class="text-danger">La distanza deve essere un numero, compreso
+                                    tra
+                                    1 e 100 km.
+                                </p>
                             </div>
 
-
-                        </div>
-                        <div class="mt-3 mb-2 fs-4">
-                            <strong>Servizi</strong>
-                        </div>
-                        <div class="row row-cols-1">
-                            <div class="form-check p-0">
-                                <div class="mb-1" v-for="service in services" :key="service.id">
-                                    <input class="form-check-input ms-2" type="checkbox" :id="`service-${service.id}`"
-                                        v-model="checkedServices" :value="service.id" @change="validateServices">
-                                    <label class="form-check-label ms-2" :for="`service-${service.id}`">
-                                        {{ service.label }}
-                                    </label>
+                            <!-- Prezzo -->
+                            <div class="mb-3">
+                                <label for="price" class="form-label">Prezzo per notte</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">&euro;</span>
+                                    <input type="number" class="form-control" id="price" aria-label="0.00" step="10"
+                                        min="10" max="9999.99" v-model="priceInput" @blur="validatePrice">
                                 </div>
+                                <!-- Messaggio di errore per il prezzo -->
+                                <p v-if="priceError || (parseFloat(priceInput) >= 1 && parseFloat(priceInput) <= 9 || !this.priceInput)"
+                                    class="text-danger">
+                                    Il prezzo deve essere un numero valido, compreso tra 10 e 9999.99.
+                                </p>
                             </div>
-                            <!-- Messaggio di errore -->
-                            <p v-if="serviceError" class="text-danger">Il servizio selezionato non esiste o non è
-                                presente
-                                nel nostro sistema
-                            </p>
+
+                            <div class="row">
+                                <!-- Numero di stanze -->
+                                <div class="col-6">
+                                    <label for="rooms" class="form-label">Numero di stanze</label>
+                                    <select name="rooms" id="rooms" class="form-select" v-model="roomsInput"
+                                        @change="validateRooms">
+                                        <option selected value="0">Scegli...</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8+</option>
+                                    </select>
+                                    <p v-if="roomsError" class="text-danger">Le stanze devono essere un numero valido,
+                                        compreso tra 1 e 50</p>
+                                </div>
+                                <!-- Numero posti letto -->
+                                <div class="col-6">
+                                    <label for="beds" class="form-label">Numero di letti</label>
+                                    <select name="beds" id="beds" class="form-select" v-model="bedsInput"
+                                        @change="validateBeds">
+                                        <option selected value="0">Scegli...</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8+</option>
+                                    </select>
+                                    <p v-if="bedsError" class="text-danger">Il numero di letti deve essere un numero
+                                        valido,
+                                        compreso tra 1 e 50</p>
+                                </div>
+
+
+                            </div>
+                            <div class="mt-3 mb-2 fs-4">
+                                <strong>Servizi</strong>
+                            </div>
+                            <div class="row row-cols-1">
+                                <div class="form-check p-0">
+                                    <div class="mb-1" v-for="service in services" :key="service.id">
+                                        <input class="form-check-input ms-2" type="checkbox"
+                                            :id="`service-${service.id}`" v-model="checkedServices" :value="service.id"
+                                            @change="validateServices">
+                                        <label class="form-check-label ms-2" :for="`service-${service.id}`">
+                                            {{ service.label }}
+                                        </label>
+                                    </div>
+                                </div>
+                                <!-- Messaggio di errore -->
+                                <p v-if="serviceError" class="text-danger">Il servizio selezionato non esiste o non è
+                                    presente
+                                    nel nostro sistema
+                                </p>
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" @click="resetFilters()">Rimuovi filtri</button>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" @click="resetFilters()">Rimuovi
+                                filtri</button>
 
-                        <!-- Bottono Applica filtri -->
-                        <div v-if="!distanceError && !priceError && !roomsError && !bedsError && !serviceError">
-                            <RouterLink @click="showModal = false" class="btn btn-primary"
-                                :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
-                                Applica filtri
-                            </RouterLink>
+                            <!-- Bottono Applica filtri -->
+                            <div v-if="!distanceError && !priceError && !roomsError && !bedsError && !serviceError">
+                                <RouterLink @click="showModal = false" class="btn btn-primary"
+                                    :to="{ name: 'filtered-apartments', query: { address: searchAddress, latitude, longitude, distance: kmInput, price: priceInput, rooms: roomsInput, beds: bedsInput, services: JSON.stringify(checkedServices) } }">
+                                    Applica filtri
+                                </RouterLink>
+                            </div>
+                            <div v-else>
+                                <button class="btn btn-primary" disabled>Applica filtri</button>
+                            </div>
+
+
+
                         </div>
-                        <div v-else>
-                            <button class="btn btn-primary" disabled>Applica filtri</button>
-                        </div>
-
-
-
                     </div>
                 </div>
+
+
             </div>
-
-
         </div>
-    </div>
 
-    <!-- ---------------------- CHIUSURA MODALE ---------------------- -->
-    <h1 class="mt-5 mb-3">Appartamenti in evidenza</h1>
-    <ApartmentsList v-if="!store.isLoading && sponsoredApartments" :apartments="sponsoredApartments"
-        :isSponsored="true" />
-    <h1 class="mt-5 mb-3">Appartamenti BoolBnb </h1>
-    <ApartmentsList v-if="!store.isLoading && unsponsoredApartments" :apartments="unsponsoredApartments"
-        :isSponsored="false" />
+        <!-- ---------------------- CHIUSURA MODALE ---------------------- -->
+        <h1 class="mt-5 mb-3">Appartamenti in evidenza</h1>
+        <ApartmentsList v-if="!store.isLoading && sponsoredApartments" :apartments="sponsoredApartments"
+            :isSponsored="true" />
+        <h1 class="mt-5 mb-3">Appartamenti BoolBnb </h1>
+        <ApartmentsList v-if="!store.isLoading && unsponsoredApartments" :apartments="unsponsoredApartments"
+            :isSponsored="false" />
+    </div>
 </template>
 
 <style scoped lang="scss">

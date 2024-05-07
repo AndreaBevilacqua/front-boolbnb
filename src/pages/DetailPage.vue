@@ -189,7 +189,7 @@ export default {
                 <div class="col">
 
                     <div class="row">
-                        <div class="col-12">
+                        <div class="col-12 carousel">
                             <figure v-for="(image, i) in carouselImages" v-show="currentIndex === i">
                                 <img class="primary-img" :src="image" :alt="apartment.title">
                             </figure>
@@ -202,7 +202,7 @@ export default {
                     <i class="fas fa-chevron-right fa-xl" @click="goToNext" style="color: #0E485B;"></i>
                 </div>
                 <!-- thumbnails -->
-                <div class="d-none" id="thumbnails">
+                <div id="thumbnails">
                     <img @click="currentIndex = i" v-for="(image, i) in carouselImages" :src="image"
                         :alt="apartment.title" :class="{ active: i === currentIndex }">
                 </div>
@@ -210,7 +210,7 @@ export default {
         </div>
 
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 col-md-8">
 
                 <h1 class="mb-0">Host: {{ apartment.user.name }}</h1>
                 <button @click="showModal = true" class="btn btn-sm btn-dark my-3">
@@ -381,15 +381,15 @@ i {
 
 .primary-img {
     border-radius: 10px;
-    height: 150px;
+    height: 220px;
     width: 100%;
 }
 
 /* Carosello */
 .active {
-    animation-name: active;
-    animation-duration: 0.5s;
-    box-shadow: 5px 5px 30px #2b8599;
+    transition: transform 0.4s;
+    transform: scale(1.1);
+    box-shadow: 2px 3px 10px rgba(43, 133, 153, 0.6);
 
 
 }
@@ -403,14 +403,15 @@ i {
 
 
 #thumbnails {
-    display: flex;
+    display: none;
     flex-wrap: wrap;
     gap: 20px;
     cursor: pointer;
     height: 200px;
 
+
     img {
-        height: 30px;
+        height: 70px;
     }
 
 }
@@ -521,30 +522,56 @@ i {
 }
 
 .map {
-    height: 500px;
+    height: 50vh;
     width: 100%;
     background-color: beige;
     margin-bottom: 15px;
 }
 
-@keyframes active {
-    0% {
-        height: 130px;
 
-    }
-
-    50% {
-        height: 131px;
-    }
-
-    100% {
-        height: 130px;
-    }
-}
-
-// Modale Messaggi
+/* Modale Messaggi*/
 #messages-modal {
     display: block;
     background-color: rgba($color: #000000, $alpha: .5);
+}
+
+@media screen and (min-width:567px) {
+
+    .primary-img {
+        height: 400px;
+
+    }
+
+    #thumbnails {
+        display: flex;
+    }
+
+}
+
+@media screen and (min-width:700px) {
+
+    .primary-img {
+        height: 500px;
+    }
+
+}
+
+@media screen and (min-width:992px) {
+
+    .primary-img {
+        height: 600px;
+    }
+
+}
+
+@media screen and (min-width:1200px) {
+    .container-fluid {
+        padding: 60px
+    }
+
+    .primary-img {
+        height: 700px;
+    }
+
 }
 </style>
