@@ -10,6 +10,7 @@ export default {
     }),
     props: {
         apartment: Object,
+        isSponsored: Boolean
     },
     methods: {
         formattedDistance() {
@@ -56,7 +57,8 @@ export default {
         <div class="card position-relative">
             <!-- carosello  -->
             <div class="carousel">
-                <i class="fa-solid fa-medal fa-beat-fade rounded-circle my-icon position-absolute"></i>
+                <i v-if="isSponsored"
+                    class="fa-solid fa-medal fa-beat-fade rounded-circle my-icon position-absolute"></i>
 
                 <!-- prev button -->
                 <i class="fas fa-chevron-left" @click="goToPrev"></i>
@@ -165,7 +167,7 @@ export default {
         position: absolute;
         font-size: 1.8rem;
         color: white;
-        text-shadow: 1px 2px 5px #4BC9E4;
+        text-shadow: 1px 2px 5px #000000;
         cursor: pointer;
     }
 
