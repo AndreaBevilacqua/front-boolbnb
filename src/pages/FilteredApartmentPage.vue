@@ -329,9 +329,11 @@ export default {
         </div>
 
         <!-- ---------------------- CHIUSURA MODALE ---------------------- -->
-        <h1 class="mt-5 mb-3">Appartamenti in evidenza</h1>
-        <ApartmentsList v-if="!store.isLoading && sponsoredApartments" :apartments="sponsoredApartments"
-            :isSponsored="true" />
+        <section v-if="sponsoredApartments.length">
+            <h1 class="mt-5 mb-3">Appartamenti in evidenza</h1>
+            <ApartmentsList v-if="!store.isLoading && sponsoredApartments" :apartments="sponsoredApartments"
+                :isSponsored="true" />
+        </section>
         <h1 class="mt-5 mb-3">Appartamenti BoolBnb </h1>
         <ApartmentsList v-if="!store.isLoading && unsponsoredApartments" :apartments="unsponsoredApartments"
             :isSponsored="false" />
