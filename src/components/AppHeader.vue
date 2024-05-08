@@ -19,14 +19,22 @@ export default {
                 <!-- Left Side Of Navbar -->
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <RouterLink class="nav-link" :to="{ name: 'home' }"><img class="img-fluid"
+                        <RouterLink class="nav-link py-0 " :to="{ name: 'home' }"><img class="img-fluid"
                                 src="../assets/logo.png" alt="logo">
-                            <span class="fs-1 me-5">
+                            <span id="logo-name" class="fs-1 d-none d-sm-block h-100 ">
                                 BoolBnB
                             </span>
                         </RouterLink>
                     </li>
 
+                </ul>
+                <ul class="navbar-nav ms-auto ">
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://localhost:8000/login/">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="http://localhost:8000/register/">Registrati</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -63,6 +71,7 @@ export default {
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
+        line-height: 80px;
     }
 }
 </style>
