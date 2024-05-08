@@ -180,37 +180,39 @@ export default {
         <h1 class="mb-3">{{ apartment.title }}</h1>
         <span> <i class="fa-solid fa-location-dot me-2"></i>{{ apartment.address }}.</span>
         <!--Carousel-->
-        <div class="image">
-            <div class="row align-items-center">
-                <!-- prev button -->
-                <div class="col-auto">
-                    <i class="fas fa-chevron-left fa-xl" @click="goToPrev" style="color: #0E485B;"></i>
-                </div>
+        <div class="image d-flex justify-content-center align-items-center">
+            <div class="row container ">
                 <div class="col">
 
                     <div class="row">
                         <div class="col-12 carousel">
+                            <!-- prev button -->
+                            <i class="fas fa-chevron-left fa-xl me-5" @click="goToPrev" style="color: #0E485B;"></i>
                             <figure v-for="(image, i) in carouselImages" v-show="currentIndex === i">
                                 <img class="primary-img" :src="image" :alt="apartment.title">
                             </figure>
+                            <!-- next button -->
+                            <i class="fas fa-chevron-right fa-xl ms-5" @click="goToNext" style="color: #0E485B;"></i>
                         </div>
 
                     </div>
                 </div>
-                <!-- next button -->
-                <div class="col-auto">
-                    <i class="fas fa-chevron-right fa-xl" @click="goToNext" style="color: #0E485B;"></i>
-                </div>
+
                 <!-- thumbnails -->
-                <div id="thumbnails">
+                <div id="thumbnails" class="mt-3 ms-5">
                     <img @click="currentIndex = i" v-for="(image, i) in carouselImages" :src="image"
                         :alt="apartment.title" :class="{ active: i === currentIndex }">
                 </div>
             </div>
         </div>
 
+
+
+
+
+
         <div class="row">
-            <div class="col-12 col-md-8">
+            <div class="col-12">
 
                 <h1 class="mb-0">Host: {{ apartment.user.name }}</h1>
                 <button @click="showModal = true" class="btn btn-sm btn-dark my-3">
@@ -356,7 +358,7 @@ export default {
         </div>
         <div class="divider my-5"></div>
         <h3 class="mb-4">Dove sarai</h3>
-        <div id="map-container" class="map-container rounded-4">
+        <div id="map-container" class="map-container rounded-4 mb-5">
             <div id="map" class="map"></div>
         </div>
 
@@ -381,7 +383,7 @@ i {
 
 .primary-img {
     border-radius: 10px;
-    height: 220px;
+    height: 190px;
     width: 100%;
 }
 
@@ -405,13 +407,15 @@ i {
 #thumbnails {
     display: none;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 30px;
     cursor: pointer;
     height: 200px;
 
 
     img {
-        height: 70px;
+        border-radius: 10px;
+        width: 120px;
+        height: 80px;
     }
 
 }
@@ -538,7 +542,7 @@ i {
 @media screen and (min-width:567px) {
 
     .primary-img {
-        height: 400px;
+        height: 300px;
 
     }
 
@@ -551,7 +555,7 @@ i {
 @media screen and (min-width:700px) {
 
     .primary-img {
-        height: 500px;
+        height: 300px;
     }
 
 }
