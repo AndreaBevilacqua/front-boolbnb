@@ -214,7 +214,7 @@ export default {
         <div class="row">
             <div class="col-12">
 
-                <h1 class="mb-0">Host: {{ apartment.user.name }}</h1>
+                <h1 class="mb-0">Host: {{ apartment.user.name }} {{ apartment.user.last_name }}</h1>
                 <button @click="showModal = true" class="btn btn-sm btn-dark my-3">
                     <i class="fa-solid fa-envelope"></i> Contatta</button>
                 <ul class="apartment-info">
