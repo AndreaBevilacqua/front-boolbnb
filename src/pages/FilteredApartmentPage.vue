@@ -35,7 +35,7 @@ export default {
     methods: {
         validateDistance() {
             // Verifica se il valore della distanza è compreso tra 1 e 100
-            if (this.kmInput < 1 || this.kmInput > 100 || !/^[a-zA-Z0-9\s]*$/.test(this.bedsInput)) {
+            if (this.kmInput < 1 || this.kmInput > 35 || !/^[a-zA-Z0-9\s]*$/.test(this.bedsInput)) {
                 this.distanceError = true; // Flag per mostrare il messaggio di errore
             } else {
                 // Se il valore è valido, nascondi il messaggio di errore o esegui un'altra azione necessaria
@@ -209,7 +209,7 @@ export default {
                                     Distanza / km {{ kmInput }}
                                 </label>
                                 <div class="range-wrap">
-                                    <input type="range" class="form-range" id="km" min="1" max="100" step="1"
+                                    <input type="range" class="form-range" id="km" min="1" max="35" step="1"
                                         v-model="kmInput" @input="validateDistance">
                                 </div>
                                 <div class="d-flex justify-content-between">
@@ -217,12 +217,12 @@ export default {
                                         1 km
                                     </div>
                                     <div>
-                                        100 km
+                                        35 km
                                     </div>
                                 </div>
                                 <p v-if="distanceError" class="text-danger">La distanza deve essere un numero, compreso
                                     tra
-                                    1 e 100 km.
+                                    1 e 35 km.
                                 </p>
                             </div>
 
