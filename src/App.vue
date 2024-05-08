@@ -28,4 +28,15 @@ main {
   overflow: auto;
   //padding: 3rem;
 }
+
+::-webkit-scrollbar {
+  width: 13px;
+  height: 10px;
+  background-color: white;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(128, 128, 128, 0.5);
+  border-radius: 20px;
+}
 </style>
